@@ -1,35 +1,32 @@
-module abm
+module ABM
 
-@everywhere using DistributedArrays
+using DistributedArrays
+using Parameters
 
-export Position, Float2D, Agent, @agent, Field2D, @field2d
+export SimState, Position, Float2D, Agent, @agent, Field2D, @field2d
 
-mutable struct Agent{B,D,I}
-    behavior::B
+#Simulation State Definition
+struct SimState
+    field::DistributedArrays.DArray
+end
+
+#Agent structure definition use Base.Random.uuid4() to generate unique ID
+mutable struct Agent{F<:Function,D,I}
+    behavior::F
     data::D
     id::I
 end
 
-(a::Agent)(x,d,id) = a.s(x,d,id)
-
-function make_function(ex::Expr)
-    return :(x -> $ex)
-end
-
-function make_model(ex::Expr,data::Symbol)
-    return :(Agent($ex,$data, Base.Random.uuid4()))
-end
-
-macro agent(data,ex)
-    return make_model(make_function(ex),data)
-end
-
+#Agent Space definition
+#Abstract type of a position in the space
 abstract type Position
 end
+#Position on a 2D space with integer coordinate system
 mutable struct Int2D <: Position
     x::Int32
     y::Int32
 end
+#Position on a 2D space wiht continuouns coordinate system
 mutable struct Float2D <: Position
     x::Float64
     y::Float64
@@ -42,11 +39,12 @@ mutable struct Float2D <: Position
         return this
     end
 end
+#Location on a space of an agent
 struct Location
     pos::Position
     agent::Agent
 end
-
+#A 2D continuonus space
 #It is discretized by 1, that means the position 1,2-1,2 it is the same of 1,3-1,3
 mutable struct Field2D
     field::DistributedArrays.DArray
