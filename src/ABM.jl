@@ -1,13 +1,18 @@
+__precompile__()
+
+"""
+ABM is a multi agent based simulation engine.
+"""
 module ABM
 
 using DistributedArrays
-using Parameters
+
 
 export SimState, Position, Float2D, Agent, @agent, Field2D, @field2d
 
 #Simulation State Definition
 struct SimState
-    field::DistributedArrays.DArray
+
 end
 
 #Agent structure definition use Base.Random.uuid4() to generate unique ID
@@ -47,22 +52,33 @@ end
 #A 2D continuonus space
 #It is discretized by 1, that means the position 1,2-1,2 it is the same of 1,3-1,3
 mutable struct Field2D
-    field::DistributedArrays.DArray
+    fielda:: DistributedArrays.DArray
+    fieldb:: DistributedArrays.DArray
     getNeighbors::Function
     place::Function
-    function Field2D(field::DistributedArrays.DArray)
-        this = new(field)
+    update::Function
+    swap::Function
+    function Field2D(FA::DistributedArrays.DArray, FB::DistributedArrays.DArray)
+        this = new(FA,FB)
         this.getNeighbors = function (pos::Float2D)
-            return field[pos.getArrayPos().x,pos.getArrayPos().y]
+            return this.fielda[pos.getArrayPos().x,pos.getArrayPos().y]
         end
         this.place = function (pos::Float2D,agent::Agent)
-            return push!(field[pos.getArrayPos().x,pos.getArrayPos().y], Location(pos,agent))
+            return push!(this.fielda[pos.getArrayPos().x,pos.getArrayPos().y], Location(pos,agent))
+        end
+        this.update = function (pos::Float2D,agent::Agent)
+            return push!(this.fieldb[pos.getArrayPos().x,pos.getArrayPos().y], Location(pos,agent))
+        end
+        this.swap = function ()
+            this.fielda = this.fieldb
         end
         return this
     end
 end
 
 macro field2d(width,height)
-    return Field2D(@DArray [Vector{Location}() for i = 1:width, j = 1:height])
+    fa=@DArray [Vector{Location}() for i = 1:width, j = 1:height]
+    fb=@DArray [Vector{Location}() for i = 1:width, j = 1:height]
+    return Field2D(fa,fb)
 end
 end

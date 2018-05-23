@@ -21,3 +21,7 @@ field.place(f,a1)
 field.place(f2,a2)
 field.place(f3,a3)
 field.getNeighbors(f)
+
+field.update(f3,a2)
+
+field.getNeighbors(f3)
