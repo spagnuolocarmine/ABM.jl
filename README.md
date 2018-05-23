@@ -1,2 +1,2 @@
 # ABM.jl
-An Multi Agent Based Simulation engine
+A Multi Agent Based Simulation engine in Julia language
