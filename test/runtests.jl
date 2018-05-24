@@ -27,6 +27,9 @@ field.update(f3,a2)
 field.swap()
 field.getNeighbors(f3)
 
-behavior!(simulation,a1)
-a2.behavior(simulation,a2)
-a3.behavior(simulation,a3)
+
+simulation.schedule.scheduleRepeating(a1)
+simulation.schedule.scheduleRepeating(a2)
+simulation.schedule.scheduleRepeating(a3)
+
+simulation.next()

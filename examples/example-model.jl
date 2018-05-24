@@ -1,8 +1,8 @@
 #create schedule and others stuff
-sim1=@simstate
+sim1=SimState()
 
 field1 = @field2d 200 200
-net = @network
+#net = @network
 
 struct data
     x::Float64
@@ -16,7 +16,7 @@ function two2()
     println("world")
 end
 
-_s = function step_function(sim1)
+function step_function(sim1)
     list=field1.getNeighbors(10)
     one1()
     two2()

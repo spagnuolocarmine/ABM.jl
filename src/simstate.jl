@@ -2,12 +2,15 @@ export SimState, Schedule, behavior!
 
 #Simulation Schedule
 mutable struct Schedule
-    this::Schedule
-
+    events::Vector{Agent}
+    scheduleRepeating::Function
     function Schedule()
         instance=new()
-        instance.this=instance
-        return this
+        instance.events = Vector{Agent}()
+        instance.scheduleRepeating = function(agent::Agent)
+            push!(instance.events,agent)
+        end
+        return instance
     end
 end
 
@@ -15,16 +18,22 @@ end
 mutable struct SimState
     schedule::Schedule
     fields::Vector{Field}
-    this::SimState
+    next::Function
     function SimState()
         instance=new()
-        instance.this = instance
+        instance.schedule = Schedule()
+        instance.fields = Vector{Field}()
+        instance.next = function()
+            for agent in instance.schedule.events
+                behavior!(instance,agent)
+            end
+        end
         return instance
     end
 end
 
 #Agent step function
-#TODO this function should not be exported outside this 
+#TODO this function should not be exported outside this
 function behavior!(simstate::SimState,agent::Agent)
     return agent.behavior(simstate,agent)
 end
