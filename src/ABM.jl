@@ -6,6 +6,7 @@ ABM is a multi agent based simulation engine.
 module ABM
 
 using DistributedArrays
+using BenchmarkTools, Compat
 
 
 include("agent.jl")

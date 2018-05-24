@@ -11,7 +11,8 @@ f3 = Float2D(2.6,3.2)
 m1 = memory(2)
 
 function b(state::SimState, agent::Agent)
-    print(string("Hello from agent:",agent.id))
+    #print(string("Hello from agent:",agent.id,"\n"))
+    sleep(rand(1:2))
 end
 a1 = Agent(b,m1)
 a2 = Agent(b,m1)
@@ -32,4 +33,4 @@ simulation.schedule.scheduleRepeating(a1)
 simulation.schedule.scheduleRepeating(a2)
 simulation.schedule.scheduleRepeating(a3)
 
-simulation.next()
+simulate!(simulation,10)
