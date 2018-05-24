@@ -26,14 +26,22 @@ mutable struct SimState
     schedule::Schedule
     fields::Vector{Field}
     next::Function
+    addField::Function
     function SimState()
         instance=new()
         instance.schedule = Schedule()
         instance.fields = Vector{Field}()
+        instance.addField = function(field::Field)
+            push!(instance.fields,field)
+        end
         instance.next = function()
             events = instance.schedule.nextTime()
             for agent in events
                 behavior!(instance,agent)
+            end
+
+            for field in instance.fields
+                field.swap()
             end
         end
         return instance

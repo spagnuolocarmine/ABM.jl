@@ -40,6 +40,7 @@ mutable struct Field2D <: Field
         this.update = function (pos::Float2D,agent::Agent)
             return push!(this.fieldb[pos.getArrayPos().x,pos.getArrayPos().y], Location(pos,agent))
         end
+        #TODO copy agents that are not moved usign update from the fielda
         this.swap = function ()
             this.fielda = this.fieldb
         end
