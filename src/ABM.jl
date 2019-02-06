@@ -14,9 +14,11 @@ using UUIDs
 
 include("agent.jl")
 include("field.jl")
+include("schedule.jl")
 include("simstate.jl")
 include("field2d.jl")
 
+#TODO Impelmente the schedule
 #TODO Field2D remove matrix and use hash
 #TODO Field2D include discretization
 #TODO Field2D include width and height definition
