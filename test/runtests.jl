@@ -1,10 +1,15 @@
-using ABM
+using Test, ABM
+
+include("schedule-test.jl")
+
+"""
+
+
+simulation = SimState()
 
 struct memory
     pos::Float2D
 end
-
-simulation = SimState()
 f = Float2D(2.0,2.0)
 f2 = Float2D(2.6,2.6)
 f3 = Float2D(2.6,3.2)
@@ -39,3 +44,4 @@ simulation.schedule.scheduleRepeating(a2)
 simulation.schedule.scheduleRepeating(a3)
 
 simulate!(simulation,10)
+"""

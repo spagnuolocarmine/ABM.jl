@@ -1,21 +1,50 @@
-export  Schedule
+export  Schedule, Priority
 
-#Simulation Schedule
+#TODO Schedue docs
+"""
+    Schedule
+
+Represents a scheduling queue in which events can be scheduled to occur at future time.
+The schedule time is the time of the most recent scheduled event.
+
+**Constructors**
+
+Schedule()
+
+"""
+
+#TODO include priority queue
+struct Priority
+    time::Float64
+    ordering::UInt
+    function Priority(time::Float64,ordering::UInt)
+        instance=new()
+        instance.time = time
+        instance.ordering = ordering
+    end #Key Constructor
+end #Key
+
 mutable struct Schedule
-    events::Vector{Agent}
+    events::PriorityQueue{Agent,Priority}
     scheduleRepeating::Function
     _step::UInt64
+    _time::Float64
     nextTime::Function
+    getTime::Function
     function Schedule()
         instance=new()
-        instance.events = Vector{Agent}()
+        instance.events = PriorityQueue{Agent,Priority}()
         instance._step=0
+        instance._time=0.0
         instance.scheduleRepeating = function(agent::Agent)
-            push!(instance.events,agent)
+            enqueue!(instance.events, agent, Priority(_time+1,0))
         end
         instance.nextTime = function ()
             instance._step+=1
             return instance.events
+        end
+        instance.getTime = function ()
+            return instance._time
         end
         return instance
     end
