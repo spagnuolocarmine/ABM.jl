@@ -1,4 +1,5 @@
-export  Schedule, Priority
+export  Schedule
+
 
 #TODO Schedue docs
 """
@@ -13,22 +14,11 @@ Schedule()
 
 """
 
-#TODO include priority queue
-struct Priority
-    time::Float64
-    ordering::UInt
-    function Priority(time::Float64,ordering::UInt)
-        instance=new()
-        instance.time = time
-        instance.ordering = ordering
-    end #Key Constructor
-end #Key
-
 mutable struct Schedule
     events::PriorityQueue{Agent,Priority}
     scheduleRepeating::Function
     _step::UInt64
-    _time::Float64
+    _time::Real
     nextTime::Function
     getTime::Function
     function Schedule()
@@ -37,7 +27,7 @@ mutable struct Schedule
         instance._step=0
         instance._time=0.0
         instance.scheduleRepeating = function(agent::Agent)
-            enqueue!(instance.events, agent, Priority(_time+1,0))
+            enqueue!(instance.events, agent, Priority(_time+1.0,0))
         end
         instance.nextTime = function ()
             instance._step+=1

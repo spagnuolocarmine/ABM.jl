@@ -12,14 +12,14 @@ using Random
 using UUIDs
 using DataStructures
 
-
+include("priority.jl")
 include("agent.jl")
 include("field.jl")
 include("schedule.jl")
 include("simstate.jl")
 include("field2d.jl")
 
-#TODO Impelmente the schedule
+#TODO Dev the schedule
 #TODO Agent function is bad to pass in the method also the agent other methods?
 #TODO Field2D remove matrix and use hash
 #TODO Field2D include discretization

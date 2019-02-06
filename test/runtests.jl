@@ -1,5 +1,7 @@
 using Test, ABM
+using DataStructures
 
+include("priority-test.jl")
 include("schedule-test.jl")
 
 """
