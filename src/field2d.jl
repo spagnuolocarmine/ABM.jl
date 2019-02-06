@@ -1,12 +1,13 @@
 
-export Float2D, Field2D, @field2d
+export Float2D, Int2D, Field2D, @field2d
 
 #Position on a 2D space with integer coordinate system
 mutable struct Int2D <: Position
     x::Int32
     y::Int32
 end
-#Position on a 2D space wiht continuouns coordinate system
+#Position on a 2D space wiht continuouns coordinate system, with discretized 1
+#TODO add generic discretization
 mutable struct Float2D <: Position
     x::Float64
     y::Float64
