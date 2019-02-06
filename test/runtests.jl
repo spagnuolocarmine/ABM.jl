@@ -14,7 +14,7 @@ m3 = memory(f3)
 field = @field2d 100 100
 
 function b(state::SimState, agent::Agent)
-    sleep(rand(1:2))
+    ##sleep(rand(1:2))
     n = ndims(field.getNeighbors(agent.data.pos))
     print(string("Hello from agent:",agent.id," ",n,"\n"))
 end

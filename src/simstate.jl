@@ -1,4 +1,10 @@
-export SimState, Schedule, behavior!, simulate!
+export SimState, Schedule, behavior!, simulate!, random
+
+rng = MersenneTwister(1234);
+
+function random()
+    rng
+end
 
 #Simulation Schedule
 mutable struct Schedule
@@ -37,7 +43,7 @@ mutable struct SimState
         instance.next = function()
             events = instance.schedule.nextTime()
             for agent in events
-                behavior!(instance,agent)
+                behavior!(instance, agent)
             end
 
             for field in instance.fields

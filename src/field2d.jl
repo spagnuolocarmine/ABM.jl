@@ -34,7 +34,7 @@ mutable struct Field2D <: Field
         this.getNeighbors = function (pos::Float2D)
             return this.fielda[pos.getArrayPos().x,pos.getArrayPos().y]
         end
-        this.place = function (pos::Float2D,agent::Agent)
+        this.place = function (pos::Float2D, agent::Agent)
             return push!(this.fielda[pos.getArrayPos().x,pos.getArrayPos().y], Location(pos,agent))
         end
         this.update = function (pos::Float2D,agent::Agent)
