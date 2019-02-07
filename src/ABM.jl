@@ -25,7 +25,7 @@ include("field2d.jl")
 #TODO Field2D include discretization
 #TODO Field2D include width and height definition
 #TODO FIeld2D include toroidal
-#TODO Field2D implement get getNeighbors distances using square and circle
+#TODO Field2D implement et getNeighbors distances using square and circle
 #TODO Schedule include EventSimulation.jl
 
 end # module
