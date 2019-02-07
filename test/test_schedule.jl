@@ -1,7 +1,6 @@
 function fstep(state::Union{SimState, Nothing}, agent::Agent)
-    print(string(agent.id,"\n"))
+    #print(string(agent.id,"\n"))
 end
-
 
 a1 = Agent(fstep,nothing)
 a2 = Agent(fstep,nothing)
@@ -17,6 +16,6 @@ scheduleRepeating!(schedule,a3)
 @test a3.stop == false
 
 for i = 1:4
-    println("step ",i)
+    #println("step ",i)
     step!(nothing, schedule)
 end

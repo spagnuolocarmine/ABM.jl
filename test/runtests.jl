@@ -3,9 +3,11 @@ using Test
 using DataStructures
 
 const testdir = dirname(@__FILE__)
+
 tests = [
-    "priority",
-    "schedule"
+    "test_priority",
+    "test_schedule",
+    "test_field2d"
 ]
 
 @testset "ABM" begin

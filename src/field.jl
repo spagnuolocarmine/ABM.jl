@@ -3,11 +3,11 @@
 abstract type Position
 end
 
+abstract type Field
+end
+
 #Location on a space of an agent
 struct Location
     pos::Position
     agent::Agent
-end
-
-abstract type Field
 end
