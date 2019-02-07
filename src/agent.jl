@@ -2,12 +2,14 @@ export Agent
 
 #Agent structure definition use Base.Random.uuid4() to generate unique ID
 mutable struct Agent
-    behavior::Function
+    step::Function
     data::Any
     id::String
-    function Agent(b::Function,data::Any)
-        instance = new(b, data)
-        instance.id= string(UUIDs.uuid4(random()))
-        return instance
+    stop::Bool
+    function Agent(step::Function,data::Any)
+        A = new(step, data)
+        A.id= string(UUIDs.uuid4(random()))
+        A.stop = false
+        return A
     end
 end

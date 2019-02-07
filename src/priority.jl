@@ -1,5 +1,5 @@
 export Priority
-import Base: +, -, ==, <, <=
+import Base: +, -, ==, <, <=, hash
 
 struct Priority<:Real
     time::Float64
@@ -38,4 +38,8 @@ function <=(x::Priority, y::Priority)
     x.time < y.time && return true
     x.time == y.time && x.priority <= y.priority && return true
     return false
+end
+
+function hash(x::Priority, h::UInt)
+    hash((x.time, x.priority), h)
 end
