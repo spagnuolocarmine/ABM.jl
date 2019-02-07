@@ -11,4 +11,4 @@ notifications:
   email: false
 
 after_success:
-  - julia -e 'using Pkg; cd(Pkg.dir("SimpleHypergraphs")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())';
+  - julia -e 'using Pkg; cd(Pkg.dir("ABM")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())';
