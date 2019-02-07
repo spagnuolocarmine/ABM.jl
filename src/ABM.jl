@@ -14,8 +14,8 @@ using DataStructures
 export Agent
 export Position
 export Priority
-export  Schedule, scheduleOnce!, scheduleRepeating!, step!, simtime
-export  SimState, simulate!, update!, random
+export Schedule, scheduleOnce!, scheduleRepeating!, step!, simtime
+export SimState, simulate!, update!, random
 export Float2D, Int2D, Field2D, @field2d
 
 
