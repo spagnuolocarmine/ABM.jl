@@ -5,13 +5,6 @@
 |--------------|
 | [![Build Status][travis-img]][travis-url]  [![Coverage Status][codecov-img]][codecov-url] <br/> Linux and macOS |
 
-% | **Documentation** | **Build Status** |
-% |---------------|--------------|
-% |[![][docs-latest-img]][docs-dev-url] | [![Build Status][travis-img]][travis-url]  [![Coverage Status][codecov-img]][codecov-url] <br/> % Linux and macOS |
-
-% ## Documentation
-% - [**DEV**][docs-dev-url] &mdash; **documentation of the most recently tagged version.**
-
 [docs-latest-img]: https://img.shields.io/badge/docs-latest-blue.svg
 [docs-dev-url]: https://github.com/spagnuolocarmine/ABM.jl/editlatest
 
