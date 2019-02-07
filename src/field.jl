@@ -1,5 +1,3 @@
-#Agent Space definition
-export Position
 
 #Abstract type of a position in the space
 abstract type Position

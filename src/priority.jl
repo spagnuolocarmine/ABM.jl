@@ -1,4 +1,3 @@
-export Priority
 import Base: +, -, ==, <, <=, hash
 
 struct Priority<:Real

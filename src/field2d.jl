@@ -1,5 +1,5 @@
 
-export Float2D, Int2D, Field2D, @field2d
+
 
 #Position on a 2D space with integer coordinate system
 mutable struct Int2D <: Position

@@ -1,12 +1,21 @@
-using Test, ABM
+using ABM
+using Test
 using DataStructures
 
-include("priority-test.jl")
-include("schedule-test.jl")
+const testdir = dirname(@__FILE__)
+tests = [
+    "priority",
+    "schedule"
+]
+
+@testset "ABM" begin
+    for t in tests
+        tp = joinpath(testdir, "$(t).jl")
+        include(tp)
+    end
+end
 
 """
-
-
 simulation = SimState()
 
 struct memory

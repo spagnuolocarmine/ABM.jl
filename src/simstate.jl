@@ -1,4 +1,4 @@
-export simulate!, SimState, update!, random
+
 
 rng = MersenneTwister(1234);
 

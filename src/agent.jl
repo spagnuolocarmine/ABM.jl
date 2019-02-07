@@ -1,4 +1,4 @@
-export Agent
+
 
 #Agent structure definition use Base.Random.uuid4() to generate unique ID
 mutable struct Agent

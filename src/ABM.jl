@@ -4,14 +4,20 @@ __precompile__()
 ABM is a multi agent based simulation engine.
 """
 module ABM
-
-
 using DistributedArrays
 using BenchmarkTools
 using Compat
 using Random
 using UUIDs
 using DataStructures
+
+export Agent
+export Position
+export Priority
+export  Schedule, scheduleOnce!, scheduleRepeating!, step!, simtime
+export  SimState, simulate!, update!, random
+export Float2D, Int2D, Field2D, @field2d
+
 
 include("priority.jl")
 include("agent.jl")
