@@ -17,8 +17,8 @@ export Location
 export Priority
 export Agent
 export Field, tx, ty
-export Float2D, Int2D
-export Field2D, setObjectLocation!, getObjectLocation, getObjectsAtLocation, getAllObjects, remove!, clear!, swapState!
+export Float2D, Int2D, toroidal, distance
+export Field2D, setObjectLocation!, getObjectLocation, getObjectsAtLocation, getAllObjects, numObjectsAtLocation, remove!, clear!, swapState!
 export Schedule, scheduleOnce!, scheduleRepeating!, step!, simtime
 export SimState, simulate!, update!, random
 

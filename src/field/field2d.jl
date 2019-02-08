@@ -20,6 +20,7 @@ Field2D(width::Int,height::Int,discretization::Float64,toroidal::Bool) =
                                         Dict{Agent,Int2D}(),Dict{Agent,Int2D}())
 
 function setObjectLocation!(f::Field2D,a::Agent,pos::Position)
+    if (pos == nothing || a == nothing || f == nothing) return end
     bag = discretize(pos,f.discretization)
     if (haskey(f.fOA,a))
 
@@ -40,12 +41,32 @@ function setObjectLocation!(f::Field2D,a::Agent,pos::Position)
 end
 
 function getObjectsAtLocation(f::Field2D,pos::Position)
+    if (pos == nothing || f == nothing) return nothing end
     bag = discretize(pos,f.discretization)
     if (!haskey(f.fA,bag)) return nothing end
-    values(f.fA[bag])
+    result = Vector{Agent}()
+    for location in values(f.fA[bag])
+        if (location.pos == pos)
+            push!(result,location.agent)
+        end
+    end
+    result
+end
+function numObjectsAtLocation(f::Field2D,pos::Position)
+    if (pos == nothing || f == nothing) return nothing end
+    bag = discretize(pos,f.discretization)
+    if (!haskey(f.fA,bag)) return nothing end
+    result = Vector{Agent}()
+    for location in values(f.fA[bag])
+        if (location.pos == pos)
+            push!(result,location.agent)
+        end
+    end
+    length(result)
 end
 
 function getObjectLocation(f::Field2D,a::Agent)
+    if (a == nothing || f == nothing) return nothing end
     if (!haskey(f.fOA,a)) return nothing end
     bag = f.fOA[a]
     f.fA[bag][a].pos

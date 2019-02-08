@@ -32,5 +32,14 @@ clear!(f)
 setObjectLocation!(f,a1,Float2D(1.0,1.0))
 setObjectLocation!(f,a2,Float2D(1.0,1.399999))
 
-@test length(getObjectsAtLocation(f,Float2D(1.0,1.0))) == 2
+@test length(getObjectsAtLocation(f,Float2D(1.0,1.0))) == 1
+
+setObjectLocation!(f,a1, getObjectLocation(f,a2))
+
+@test getObjectLocation(f,a1) == Float2D(1.0,1.399999)
+
+@test length(getObjectsAtLocation(f, getObjectLocation(f,a1))) == 2
+
+@test numObjectsAtLocation(f, getObjectLocation(f,a1)) == 2
+
 #swapState!(f)

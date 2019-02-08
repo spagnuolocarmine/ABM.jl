@@ -5,15 +5,16 @@ using DataStructures
 const testdir = dirname(@__FILE__)
 
 tests = [
-    "test_priority",
-    "test_schedule",
-    "test_field2d",
-    "test_agent"
+    "priority",
+    "schedule",
+    "field2d",
+    "agent",
+    "float2d"
 ]
 
 @testset "ABM" begin
     for t in tests
-        tp = joinpath(testdir, "$(t).jl")
+        tp = joinpath(testdir, "test-$(t).jl")
         include(tp)
     end
 end
