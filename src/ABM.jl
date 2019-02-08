@@ -40,9 +40,10 @@ include("field/field2d.jl")
 include("schedule.jl")
 include("simstate.jl")
 
-#TODO Dev the schedule
+#TODO Add to schedule the interval for scheduling
 #TODO Agent function is bad to pass in the method also the agent other methods?
 #TODO Field2D implement et getNeighbors distances using square and circle
+#TODO More test for schedule and field2d
 
 
 function simulate!(simstate::SimState, nsteps)
