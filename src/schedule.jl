@@ -1,6 +1,3 @@
-
-
-#TODO Schedue docs
 """
     Schedule
 
@@ -15,7 +12,7 @@ Schedule()
 
 mutable struct Schedule
     events::PriorityQueue{Agent,Priority}
-    steps::UInt64
+    steps::Int64
     time::Float64
 
 end
@@ -36,6 +33,13 @@ end
 
 """
 """
+function scheduleOnce!(schedule::Schedule,agent::Agent, ordering::Int)
+    agent.stop = true
+    enqueue!(schedule.events, agent, Priority(schedule.time+1.0,ordering))
+end
+
+"""
+"""
 function scheduleOnce!(schedule::Schedule,agent::Agent, time::Float64)
     agent.stop = true
     enqueue!(schedule.events, agent, Priority(time,0))
@@ -43,7 +47,7 @@ end
 
 """
 """
-function scheduleOnce!(schedule::Schedule,agent::Agent, time::Float64, ordering::UInt)
+function scheduleOnce!(schedule::Schedule,agent::Agent, time::Float64, ordering::Int)
     agent.stop = true
     enqueue!(schedule.events, agent, Priority(time,ordering))
 end
@@ -53,19 +57,24 @@ end
 function scheduleRepeating!(schedule::Schedule,agent::Agent)
     enqueue!(schedule.events, agent, Priority(schedule.time+1.0,0))
 end
+"""
+"""
+function scheduleRepeating!(schedule::Schedule,agent::Agent,ordering::Int)
+    enqueue!(schedule.events, agent, Priority(schedule.time+1.0,ordering))
+end
 
 """
 """
 function scheduleRepeating!(schedule::Schedule,agent::Agent, time::Float64)
+    println("Schedule ",schedule.time," ",time)
     enqueue!(schedule.events, agent, Priority(time,0))
 end
 
 """
 """
-function scheduleRepeating!(schedule::Schedule,agent::Agent, time::Float64, ordering::UInt)
+function scheduleRepeating!(schedule::Schedule,agent::Agent, time::Float64, ordering::Int)
     enqueue!(schedule.events, agent, Priority(time,ordering))
 end
-
 
 """
 """
@@ -83,8 +92,8 @@ function step!(simstate::Any,schedule::Schedule)
     while true
         if(isempty(schedule.events)) break end # no other events in the scheduling queue
         event = peek(schedule.events)
+        if(event.second.time > schedule.time) break end #no other events for currenttime
         ctime = event.second.time
-        if(ctime > schedule.time) break end #no other events for currenttime
         dequeue!(schedule.events)
         push!(cevents,event)
     end #while loop

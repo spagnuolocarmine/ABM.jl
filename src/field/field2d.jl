@@ -1,21 +1,4 @@
-#Position on a 2D space with integer coordinate system
-mutable struct Int2D <: Position
-    x::Int32
-    y::Int32
-end
-#Position on a 2D space wiht continuouns coordinate system
-mutable struct Float2D <: Position
-    x::Float64
-    y::Float64
-    getArrayPos::Function
-    function Float2D(x::Float64,y::Float64)
-        this = new(x,y)
-        this.getArrayPos = function ()
-            return Int2D(convert(UInt64, floor(x)),convert(UInt64, floor(y)))
-        end
-        return this
-    end
-end
+
 
 #A 2D continuonus space
 #It is discretized by 1, that means the position 1,2-1,2 it is the same of 1,3-1,3
