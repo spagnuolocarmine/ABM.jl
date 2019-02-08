@@ -1,34 +1,5 @@
-
 """
-#A 2D continuonus space
-#It is discretized by 1, that means the position 1,2-1,2 it is the same of 1,3-1,3
-mutable struct Field2D <: Field
-    toroidal::Bool
-    fielda:: DistributedArrays.DArray
-    fieldb:: DistributedArrays.DArray
-    getNeighbors::Function
-    place::Function
-    update::Function
-    swap::Function
-    function Field2D(FA::DistributedArrays.DArray, FB::DistributedArrays.DArray)
-        this = new(FA,FB)
-        this.toroidal = true#???
-        this.getNeighbors = function (pos::Float2D)
-            return this.fielda[pos.getArrayPos().x,pos.getArrayPos().y]
-        end
-        this.place = function (pos::Float2D, agent::Agent)
-            return push!(this.fielda[pos.getArrayPos().x,pos.getArrayPos().y], Location(pos,agent))
-        end
-        this.update = function (pos::Float2D,agent::Agent)
-            return push!(this.fieldb[pos.getArrayPos().x,pos.getArrayPos().y], Location(pos,agent))
-        end
-        #TODO copy agents that are not moved usign update from the fielda
-        this.swap = function ()
-            this.fielda = this.fieldb
-        end
-        return this
-    end
-end
+    Field2D(...)
 """
 
 mutable struct Field2D <: Field
@@ -38,46 +9,80 @@ mutable struct Field2D <: Field
     toroidal::Bool
     fA::Dict{Int2D, Dict{Agent,Location}}
     fB::Dict{Int2D, Dict{Agent,Location}}
-    fO::Dict{Agent,Int2D}
+    fOA::Dict{Agent,Int2D}
+    fOB::Dict{Agent,Int2D}
 
 end
 
 Field2D(width::Int,height::Int,discretization::Float64,toroidal::Bool) =
-    Field2D(width,height,discretization,toroidal,Dict{Int2D,Dict{Agent,Location}}(),Dict{Int2D,Dict{Agent,Location}}(),Dict{Agent,Int2D}())
+    Field2D(width,height,discretization,toroidal,
+        Dict{Int2D,Dict{Agent,Location}}(),Dict{Int2D,Dict{Agent,Location}}(),
+                                        Dict{Agent,Int2D}(),Dict{Agent,Int2D}())
 
 function setObjectLocation!(f::Field2D,a::Agent,pos::Position)
     bag = discretize(pos,f.discretization)
-    if (haskey(f.fO,a))
+    if (haskey(f.fOA,a))
 
-        if (f.fA[f.fO[a]][a].pos == pos)#the position is not changed
+        if (f.fA[f.fOA[a]][a].pos == pos)#the position is not changed
             return true
         end
-
-        if (f.fO[a] == bag)# if (fO.get(A) == bag) the agent is in the same bag but change the position
-            f.fA[f.fO[a]][a].pos = pos
+        if (f.fOA[a] == bag)# if (fO.get(A) == bag) the agent is in the same bag but change the position
+            f.fA[f.fOA[a]][a].pos = pos
             return true
         else
-            delete!(f.fA[f.fO[a]],a)
-            delete!(f.fO,a)
+            remove!(f,a)
         end
     end
     if (!haskey(f.fA,bag))
         f.fA[bag] = Dict{Agent,Location}()
     end
-    f.fA[bag][a] = Location(pos,a)
-    f.fO[a] = bag
+    add!(f,a,pos)
 end
 
-#function setObjectLocation!(f::Field2D,a::Agent,pos::Int2D)
-#end
-
-#getObjectsAtLocations
+function getObjectsAtLocation(f::Field2D,pos::Position)
+    bag = discretize(pos,f.discretization)
+    if (!haskey(f.fA,bag)) return nothing end
+    values(f.fA[bag])
+end
 
 function getObjectLocation(f::Field2D,a::Agent)
-    if (!haskey(f.fO,a)) return nothing end
-    bag = f.fO[a]
+    if (!haskey(f.fOA,a)) return nothing end
+    bag = f.fOA[a]
     f.fA[bag][a].pos
 end
+
+function getAllObjects(f::Field2D)
+    values(f.fOA)
+end
+
+#TODO CHECK DB
+function add!(f::Field2D,a::Agent,pos::Position)
+    #here we add the agent in the memory B for the next step
+    bag = discretize(pos,f.discretization)
+    f.fA[bag][a] = Location(pos,a)
+    f.fOA[a] = bag
+end
+
+
+#TODO CHECK DB
+function remove!(f::Field2D,a::Agent)
+    #here we remove the agent from the memory B for the next step
+    delete!(f.fA[f.fOA[a]],a)
+    delete!(f.fOA,a)
+end
+
+function swapState!(f::Field2D)
+    f.fB = f.fA
+    f.fOB = f.fOA
+end
+
+function clear!(f::Field2D)
+    f.fA = Dict{Int2D, Dict{Agent,Location}}()
+    f.fB = Dict{Int2D, Dict{Agent,Location}}()
+    f.fOA = Dict{Agent,Int2D}()
+    f.fOB = Dict{Agent,Int2D}()
+end
+
 
 function discretize(p::Float2D,discretization::Float64)
     Int2D(convert(Int, floor(p.x/discretization)), convert(Int, floor(p.y/discretization)));
@@ -85,12 +90,3 @@ end
 function discretize(p::Int2D,discretization::Int2D)
     Int2D(convert(Int, floor(p.x/discretization)), convert(Int, floor(p.y/discretization)));
 end
-
-
-"""
-macro field2d(width,height)
-    fa=@DArray [Vector{Location}() for i = 1:width, j = 1:height]
-    fb=@DArray [Vector{Location}() for i = 1:width, j = 1:height]
-    return Field2D(fa,fb)
-end
-"""

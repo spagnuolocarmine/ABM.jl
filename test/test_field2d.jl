@@ -18,3 +18,19 @@ setObjectLocation!(f,a1,Float2D(10.0,10.0))
 setObjectLocation!(f,a2,Float2D(11.0,11.0))
 
 @test getObjectLocation(f,a2) == Float2D(11.0,11.0)
+
+@test length(getAllObjects(f)) == 2
+
+remove!(f,a1)
+
+@test length(getAllObjects(f)) == 1
+
+clear!(f)
+
+@test length(getAllObjects(f)) == 0
+
+setObjectLocation!(f,a1,Float2D(1.0,1.0))
+setObjectLocation!(f,a2,Float2D(1.0,1.399999))
+
+@test length(getObjectsAtLocation(f,Float2D(1.0,1.0))) == 2
+#swapState!(f)
