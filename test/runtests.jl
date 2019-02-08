@@ -7,7 +7,8 @@ const testdir = dirname(@__FILE__)
 tests = [
     "test_priority",
     "test_schedule",
-    "test_field2d"
+    "test_field2d",
+    "test_agent"
 ]
 
 @testset "ABM" begin

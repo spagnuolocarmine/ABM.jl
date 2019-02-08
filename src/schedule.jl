@@ -97,9 +97,9 @@ function step!(simstate::Any,schedule::Schedule)
         push!(cevents,event)
     end #while loop
     for e in cevents
-        e.first.step(simstate,e.first)
-        if(!e.first.stop)
-            enqueue!(schedule.events, e.first, Priority(ctime+1.0,e.second.priority))
+        ce = deepcopy(e.first)
+        ce.step(simstate,e.first)
+        if(!ce.stop) enqueue!(schedule.events, ce, Priority(ctime+1.0, e.second.priority))
         end
     end
 
