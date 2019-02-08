@@ -3,6 +3,14 @@
 
 Represents a scheduling queue in which events can be scheduled to occur at future time.
 The schedule time is the time of the most recent scheduled event.
+The schedule time starts from 0.0. The time -1.0 is the time before simulation.
+The time after simulation is the time maxiumum Float64.
+You can schedule your events at time greater then 0.0, such as 0.0 + eps().
+
+The events are cloned before each simulation step, when an agent is scheduled,
+there are no changing in its memory, until the  next simulation step.
+This ensures that the agent memory remains unchanged during the simulation step,
+and the agents can see the status of the other agents consistent with the current simulation time.
 
 **Constructors**
 
@@ -21,6 +29,7 @@ end
     Schedule()
 
 Construct `Schedule` with empty events list and initial time 0.0.
+
 """
 Schedule() = Schedule(PriorityQueue{Agent,Priority}(),0,0.0)
 
