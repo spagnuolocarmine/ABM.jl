@@ -21,8 +21,7 @@ function -(x::Priority, y::Priority)
     Priority(x.time-y.time, x.priority-y.priority)
 end
 
-# we define lexicographic order on PriorityTime
-# where both objectives are maximized and time is more important
+
 function ==(x::Priority, y::Priority)
     x.time==y.time && x.priority==y.priority
 end

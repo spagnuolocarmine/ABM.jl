@@ -17,7 +17,8 @@ export Priority
 export Schedule, scheduleOnce!, scheduleRepeating!, step!, simtime
 export SimState, simulate!, update!, random
 export Field, tx, ty
-export Float2D, Int2D, Field2D, @field2d
+export Float2D, Int2D
+export Field2D, setObjectLocation!, getObjectLocation
 
 
 include("priority.jl")

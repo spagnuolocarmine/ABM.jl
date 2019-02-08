@@ -66,7 +66,6 @@ end
 """
 """
 function scheduleRepeating!(schedule::Schedule,agent::Agent, time::Float64)
-    println("Schedule ",schedule.time," ",time)
     enqueue!(schedule.events, agent, Priority(time,0))
 end
 
