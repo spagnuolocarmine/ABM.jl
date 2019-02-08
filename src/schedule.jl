@@ -105,7 +105,7 @@ function step!(simstate::Any,schedule::Schedule)
         dequeue!(schedule.events)
         push!(cevents,event)
     end #while loop
-    for e in cevents
+    Threads.@threads for e in cevents
         ce = deepcopy(e.first)
         ce.step(simstate,e.first)
         if(!ce.stop) enqueue!(schedule.events, ce, Priority(ctime+1.0, e.second.priority))
