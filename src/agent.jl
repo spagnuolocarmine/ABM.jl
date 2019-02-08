@@ -1,22 +1,28 @@
 import Base:  ==, hash
-
+"""
+    Agent()
+"""
 mutable struct Agent
     step::Function
     data::Any
     id::String
     stop::Bool
     function Agent(step::Function,data::Any)
-        A = new(step, data)
-        A.id = string(UUIDs.uuid4(random()))
-        A.stop = false
-        return A
+        agent = new(step, data)
+        agent.id = string(UUIDs.uuid4(random()))
+        agent.stop = false
+        return agent
     end
 end
 
-function ==(x::Agent, y::Agent)
-    x.id==y.id
+function ==(agent1::Agent, agent2::Agent)
+    agent1.id==agent2.id
 end
 
-function hash(x::Agent, h::UInt)
-    hash(x.id, h)
+function hash(agent::Agent, h::UInt)
+    hash(agent.id, h)
+end
+
+function stop!(agent::Agent)
+    agent.stop = true
 end

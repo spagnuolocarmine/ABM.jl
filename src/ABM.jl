@@ -21,7 +21,7 @@ using DataStructures
 export Position
 export Location
 export Priority
-export Agent
+export Agent, stop!
 export Field, tx, ty
 export Float2D, Int2D, toroidal, distance
 export Field2D, setObjectLocation!, getObjectLocation, getObjectsAtLocation, getAllObjects, numObjectsAtLocation, remove!, clear!, swapState!
