@@ -4,7 +4,7 @@ __precompile__()
 ABM is a multi agent based simulation engine.
 """
 module ABM
-using DistributedArrays
+using Distributed
 using BenchmarkTools
 using Compat
 using Random
