@@ -2,6 +2,12 @@ __precompile__()
 
 """
 ABM is a multi agent based simulation engine.
+
+Motivations:
+- Julia allow easily to parallelize the code also at simulation code.
+- MASON does not provide double buffering for agents memories and positions.
+- Julia provides lots of libraries for scientific computing.
+- Julia data visualization.
 """
 module ABM
 using Distributed
