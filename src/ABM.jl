@@ -16,17 +16,27 @@ using Compat
 using Random
 using UUIDs
 using DataStructures
+using LightGraphs
 
-
+export Agent,
+        stop!
 export Position
 export Location
+export Field
+export Real2D, Int2D,
+        toroidal, distance
+export Field2D,
+        setObjectLocation!,
+        getObjectLocation, getObjectsAtLocation, getNeighborsExactlyWithinDistance, getAllObjects,
+        numObjectsAtLocation,
+        remove!, clear!, swapState!
+export Network
 export Priority
-export Agent, stop!
-export Field, tx, ty
-export Real2D, Int2D, toroidal, distance
-export Field2D, setObjectLocation!, getObjectLocation, getObjectsAtLocation, getAllObjects, numObjectsAtLocation, remove!, clear!, swapState!
-export Schedule, scheduleOnce!, scheduleRepeating!, step!, simtime
-export SimState, simulate!, update!, random
+export Schedule,
+        scheduleOnce!, scheduleRepeating!,
+        step!
+export SimState,
+        simulate!, update!, random
 
 
 include("priority.jl")

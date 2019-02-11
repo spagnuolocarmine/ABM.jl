@@ -4,7 +4,7 @@ import Base:  ==, hash
 """
 mutable struct Agent
     step::Function
-    data::Any
+    state::Any
     id::String
     stop::Bool
     function Agent(step::Function,data::Any)
