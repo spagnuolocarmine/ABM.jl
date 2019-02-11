@@ -1,6 +1,4 @@
-function fstep(state::Union{SimState, Nothing}, agent::Agent)
-    #print(string(agent.id,"\n"))
-end
+function fstep(state::Union{SimState, Nothing}, agent::Agent) end
 struct Data
     pos::Real2D
 end
@@ -19,3 +17,10 @@ a3 = deepcopy(a2)
 
 @test a1.state.pos != a3.state.pos
 @test a2.state.pos == a3.state.pos
+
+@test a1 != a2
+@test a2 == a3
+
+@test a1.id != a2.id
+@test a1.id != a3.id
+@test a2.id == a3.id

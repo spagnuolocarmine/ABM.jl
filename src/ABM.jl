@@ -20,6 +20,7 @@ using LightGraphs
 
 export Agent,
         stop!
+export Patch
 export Position
 export Location
 export Field
@@ -41,6 +42,7 @@ export SimState,
 
 include("priority.jl")
 include("agent.jl")
+include("patch.jl")
 include("field/position.jl")
 include("field/location.jl")
 include("field/int2d.jl")
