@@ -1,8 +1,11 @@
 using ABM
 using Test
 using DataStructures
+using Distributed
 
 const testdir = dirname(@__FILE__)
+
+#addprocs(4);
 
 tests = [
     "priority",

@@ -43,15 +43,6 @@ function distance(p1::Real2D, p2::Real2D,  dim1::Real, dim2::Real, toroidal::Boo
 end
 
 """
-Utility function for toroidal distance.
-"""
-function distance(p1::Real2D, p2::Real2D)
-    dx = p1.x - p2.x;
-    dy = p1.y - p2.y;
-    return sqrt(dx * dx + dy * dy)
-end
-
-"""
 Utility function for toroidal euclidian field.
 """
 function toroidalTransform(val::Real, dim::Real)

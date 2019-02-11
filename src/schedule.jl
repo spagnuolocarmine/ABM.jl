@@ -105,6 +105,7 @@ function step!(simstate::Any,schedule::Schedule)
         @inbounds dequeue!(schedule.events)
         push!(cevents,event)
     end #while loop
+
     @sync @distributed for e in cevents
         ce = deepcopy(e.first)
         @async ce.step(simstate,e.first)

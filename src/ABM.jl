@@ -33,11 +33,11 @@ export Field2D,
         setObjectLocation!,
         getObjectLocation, getObjectsAtLocation, getNeighborsWithinDistance, getAllObjects,
         numObjectsAtLocation,
-        remove!, clear!, swapState!
+        remove!, clean!, swapState!
 export Network
 export Bounds,
         checkBoundCircle
-        
+
 export Priority
 export Schedule,
         scheduleOnce!, scheduleRepeating!,

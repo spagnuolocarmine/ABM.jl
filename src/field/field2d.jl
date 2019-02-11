@@ -24,6 +24,7 @@ Field2D(width::Real, height::Real,discretization::Real, toroidal::Bool) =
 function setObjectLocation!(f::Field2D, obj::Union{Agent,Patch}, pos::Position)
     if (pos == nothing || obj == nothing || f == nothing) return end
     bag = discretize(pos,f.discretization)
+
     if (haskey(f.fOA,obj))
 
         if (@inbounds f.fA[f.fOA[obj]][obj].pos == pos)#the position is not changed
@@ -46,49 +47,60 @@ end
     This method is inclusive, that means returns also objects at exactly the given distance.
     The search is made using a radial searching.
 """
-function getNeighborsWithinDistance(f::Field2D, pos::Position, _distance::Real, isToroidal::Bool)
+function getNeighborsWithinDistance(f::Field2D, pos::Position, _distance::Real)
 
     if _distance <= 0.0 return nothing end
 
     discDistance = convert(Int, floor(_distance/f.discretization))
     discPos = discretize(pos,f.discretization)
 
-    maxX = convert(Int, ceil(f.width/f.discretization)) - 1
-    maxY = convert(Int, ceil(f.height/f.discretization)) - 1
+    maxX = convert(Int, ceil(f.width/f.discretization)) #number of bag
+    maxY = convert(Int, ceil(f.height/f.discretization)) #number of bag
 
     result = Vector{Union{Agent,Patch}}()
 
-    if !isToroidal
-        minI = min(0, discPos.x - discDistance)
-        maxI = max(discPos.x + discDistance, maxX)
-        minJ = min(0, discPos.y - discDistance)
-        maxJ = max(discPos.y + discDistance, maxY)
-        for i in minI:maxI
-            for j in minJ:maxJ
-                bagID = Int2D(i,j)
-                if (haskey(f.fA, bagID))
-                    @inbounds b = Bounds(f, bagID)
-                    @inbounds bag = f.fA[bagID] #Dict{Union{Agent,Patch},Location}
-                    check = checkBoundCircle(b, pos, _distance)
-                    if check == 1
-                        append!(result, keys(bag))
-                    elseif check == 0
-                        for obj in bag
-                            if distance(obj.second.pos, pos, f.width, f.height, false) <= _distance
-                                push!(result, obj.first)
-                            end
+    if !f.toroidal
+        minI = max(0, discPos.x - discDistance)
+        maxI = min(discPos.x + discDistance, maxX - 1) #start from 0 remove the last bag
+        minJ = max(0, discPos.y - discDistance)
+        maxJ = min(discPos.y + discDistance, maxY - 1)
+
+    else
+        minI = discPos.x - discDistance - 1
+        maxI = discPos.x + discDistance + 1
+        minJ = discPos.y - discDistance -1
+        maxJ = discPos.y + discDistance + 1
+
+    end #!isToroidal
+    #for i = minI:maxI, j = minJ:maxJ
+    #@sync @distributed
+    for (i,j) in collect(Iterators.product(minI:maxI, minJ:maxJ))
+            bagID = Int2D(tTransform(i,maxX),tTransform(j,maxY))
+            if (haskey(f.fA, bagID))
+                @inbounds b = Bounds(f, bagID)
+                @inbounds bag = f.fA[bagID] #Dict{Union{Agent,Patch},Location}
+                check = checkBoundCircle(b, pos, _distance, f.toroidal)
+                if check == 1
+                    append!(result, keys(bag))
+                elseif check == 0
+                    for obj in bag
+                        if distance(obj.second.pos, pos, f.width, f.height, f.toroidal) <= _distance
+                            push!(result, obj.first)
                         end
                     end
                 end
+            end
 
-            end # for j
-        end # for i
-    else
-        #TODO toroidal search
-    end #!isToroidal
+    end # for i for j
 
     return result
 end
+
+function tTransform(x::Real, width::Real)
+    if x >= 0 return (x % width) end
+    return (x % width) + width
+end
+
 
 
 function getObjectsAtLocation(f::Field2D, pos::Position)
@@ -148,7 +160,7 @@ function swapState!(f::Field2D)
     @inbounds f.fOB = f.fOA
 end
 
-function clear!(f::Field2D)
+function clean!(f::Field2D)
     f.fA = Dict{Int2D, Dict{Union{Agent,Patch},Location}}()
     f.fB = Dict{Int2D, Dict{Union{Agent,Patch},Location}}()
     f.fOA = Dict{Union{Agent,Patch},Int2D}()
