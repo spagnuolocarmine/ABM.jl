@@ -23,7 +23,7 @@ export Location
 export Priority
 export Agent, stop!
 export Field, tx, ty
-export Float2D, Int2D, toroidal, distance
+export Real2D, Int2D, toroidal, distance
 export Field2D, setObjectLocation!, getObjectLocation, getObjectsAtLocation, getAllObjects, numObjectsAtLocation, remove!, clear!, swapState!
 export Schedule, scheduleOnce!, scheduleRepeating!, step!, simtime
 export SimState, simulate!, update!, random
@@ -34,7 +34,7 @@ include("agent.jl")
 include("field/position.jl")
 include("field/location.jl")
 include("field/int2d.jl")
-include("field/float2d.jl")
+include("field/real2d.jl")
 include("field/field.jl")
 include("field/field2d.jl")
 include("schedule.jl")

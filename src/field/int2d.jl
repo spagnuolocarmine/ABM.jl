@@ -1,8 +1,8 @@
 import Base:  ==, hash
 #Position on a 2D space with integer coordinate system
 struct Int2D <: Position
-    x::Int32
-    y::Int32
+    x::Integer
+    y::Integer
 end
 
 function ==(p1::Int2D, p2::Int2D)

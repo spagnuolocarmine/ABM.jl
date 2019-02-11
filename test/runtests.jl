@@ -9,7 +9,7 @@ tests = [
     "schedule",
     "field2d",
     "agent",
-    "float2d"
+    "real2d"
 ]
 
 @testset "ABM" begin

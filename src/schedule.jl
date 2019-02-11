@@ -99,16 +99,16 @@ function step!(simstate::Any,schedule::Schedule)
     cevents = Vector{Pair{Agent,Priority}}() #current events to be scheduled for this time
     while true
         if(isempty(schedule.events)) break end # no other events in the scheduling queue
-        event = peek(schedule.events)
+        @inbounds event = peek(schedule.events)
         if(event.second.time > schedule.time) break end #no other events for currenttime
         ctime = event.second.time
-        dequeue!(schedule.events)
+        @inbounds dequeue!(schedule.events)
         push!(cevents,event)
     end #while loop
     @sync @distributed for e in cevents
         ce = deepcopy(e.first)
-        ce.step(simstate,e.first)
-        if(!ce.stop)
+        @async ce.step(simstate,e.first)
+        @async if(!ce.stop)
             enqueue!(schedule.events, ce, Priority(ctime+1.0, e.second.priority))
         end
     end
