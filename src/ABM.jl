@@ -21,21 +21,28 @@ using LightGraphs
 export Agent,
         stop!
 export Patch
+
 export Position
-export Location
-export Field
 export Real2D, Int2D,
         toroidal, distance
+
+
+export Location
+export Field
 export Field2D,
         setObjectLocation!,
-        getObjectLocation, getObjectsAtLocation, getNeighborsExactlyWithinDistance, getAllObjects,
+        getObjectLocation, getObjectsAtLocation, getNeighborsWithinDistance, getAllObjects,
         numObjectsAtLocation,
         remove!, clear!, swapState!
 export Network
+export Bounds,
+        checkBoundCircle
+        
 export Priority
 export Schedule,
         scheduleOnce!, scheduleRepeating!,
         step!
+
 export SimState,
         simulate!, update!, random
 
@@ -49,6 +56,7 @@ include("field/int2d.jl")
 include("field/real2d.jl")
 include("field/field.jl")
 include("field/field2d.jl")
+include("field/bounds.jl")
 include("schedule.jl")
 include("simstate.jl")
 

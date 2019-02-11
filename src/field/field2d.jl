@@ -3,8 +3,8 @@
 """
 
 mutable struct Field2D <: Field
-    width::Int
-    height::Int
+    width::Real
+    height::Real
     discretization::Real
     toroidal::Bool
     fA::Dict{Int2D, Dict{Union{Agent,Patch},Location}}
@@ -14,7 +14,9 @@ mutable struct Field2D <: Field
 
 end
 
-Field2D(width::Int, height::Int,discretization::Real, toroidal::Bool) =
+
+
+Field2D(width::Real, height::Real,discretization::Real, toroidal::Bool) =
     Field2D(width, height, discretization,toroidal,
         Dict{Int2D,Dict{Union{Agent,Patch},Location}}(), Dict{Int2D,Dict{Union{Agent,Patch},Location}}(),
                                         Dict{Union{Agent,Patch},Int2D}(), Dict{Union{Agent,Patch},Int2D}())
@@ -40,9 +42,54 @@ function setObjectLocation!(f::Field2D, obj::Union{Agent,Patch}, pos::Position)
     add!(f,obj,pos)
 end
 
-function getNeighborsExactlyWithinDistance(f::Field2D, pos::Position, distance::Real)
+"""
+    This method is inclusive, that means returns also objects at exactly the given distance.
+    The search is made using a radial searching.
+"""
+function getNeighborsWithinDistance(f::Field2D, pos::Position, _distance::Real, isToroidal::Bool)
 
+    if _distance <= 0.0 return nothing end
+
+    discDistance = convert(Int, floor(_distance/f.discretization))
+    discPos = discretize(pos,f.discretization)
+
+    maxX = convert(Int, ceil(f.width/f.discretization)) - 1
+    maxY = convert(Int, ceil(f.height/f.discretization)) - 1
+
+    result = Vector{Union{Agent,Patch}}()
+
+    if !isToroidal
+        minI = min(0, discPos.x - discDistance)
+        maxI = max(discPos.x + discDistance, maxX)
+        minJ = min(0, discPos.y - discDistance)
+        maxJ = max(discPos.y + discDistance, maxY)
+        for i in minI:maxI
+            for j in minJ:maxJ
+                bagID = Int2D(i,j)
+                if (haskey(f.fA, bagID))
+                    @inbounds b = Bounds(f, bagID)
+                    @inbounds bag = f.fA[bagID] #Dict{Union{Agent,Patch},Location}
+                    check = checkBoundCircle(b, pos, _distance)
+                    if check == 1
+                        append!(result, keys(bag))
+                    elseif check == 0
+                        for obj in bag
+                            if distance(obj.second.pos, pos, f.width, f.height, false) <= _distance
+                                push!(result, obj.first)
+                            end
+                        end
+                    end
+                end
+
+            end # for j
+        end # for i
+    else
+        #TODO toroidal search
+    end #!isToroidal
+
+    return result
 end
+
 
 function getObjectsAtLocation(f::Field2D, pos::Position)
     if (pos == nothing || f == nothing) return nothing end

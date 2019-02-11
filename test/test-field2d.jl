@@ -42,4 +42,24 @@ setObjectLocation!(f,a1, getObjectLocation(f,a2))
 
 @test numObjectsAtLocation(f, getObjectLocation(f,a1)) == 2
 
+f2 = Field2D(10.0,10.0,0.5,true)
+
+pos = Real2D(5.2,5.2)
+__distance = 3.0
+
+setObjectLocation!(f2,Patch(nothing),Real2D(5.5,5.5))
+setObjectLocation!(f2,Patch(nothing),Real2D(4.0,4.0))
+setObjectLocation!(f2,Patch(nothing),Real2D(5.2,5.2))
+setObjectLocation!(f2,Patch(nothing),Real2D(5.2,2.2))
+setObjectLocation!(f2,Patch(nothing),Real2D(5.2,2.1))
+
+@test length(getNeighborsWithinDistance(f2, pos , __distance ,false)) == 4
+
+setObjectLocation!(f2,Patch(nothing),Real2D(0.1,0.1))
+__distance = 5.0
+
+@test length(getNeighborsWithinDistance(f2, pos , __distance ,false)) == 5
+
+
+
 #swapState!(f)
