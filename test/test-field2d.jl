@@ -21,9 +21,6 @@ setObjectLocation!(f,a2,Real2D(11.0,11.0))
 
 @test length(getAllObjects(f)) == 2
 
-remove!(f,a1)
-
-@test length(getAllObjects(f)) == 1
 
 clean!(f)
 
@@ -100,4 +97,10 @@ setObjectLocation!(f4,Patch(nothing),Real2D(2.9,8.0))
 
 @test length(getNeighborsWithinDistance(f4,  Real2D(0.1,5.0) , 5)) == 9
 
+#TODO TEST DOUBLE BUFFERING
+"""
+p1 = Patch(nothing)
+setObjectLocation!(f4,p1,Real2D(2.9,8.0))
+@test length(getNeighborsWithinDistance(f4,  Real2D(0.1,5.0) , 5)) == 9
+"""
 #swapState!(f)

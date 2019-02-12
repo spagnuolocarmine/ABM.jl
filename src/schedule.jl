@@ -19,6 +19,7 @@ Schedule()
 """
 
 mutable struct Schedule
+    simstate::SimState
     events::PriorityQueue{Agent,Priority}
     endevents::Dict{Agent,Agent}
     steps::Int64
@@ -32,7 +33,7 @@ end
 Construct `Schedule` with empty events list and initial time 0.0.
 
 """
-Schedule() = Schedule(PriorityQueue{Agent,Priority}(),Dict{Agent,Agent}(),0,0.0)
+Schedule(simstate::SimState) = Schedule(simstate,PriorityQueue{Agent,Priority}(),Dict{Agent,Agent}(),0,0.0)
 
 """
 """
@@ -97,7 +98,7 @@ end
 
 """
 """
-function step!(simstate::Any,schedule::Schedule)
+function step!(schedule::Schedule)
     schedule.steps+=1
     schedule.time = peek(schedule.events).second.time
     ctime = schedule.time #current simulation time given by the event with small time
@@ -112,13 +113,15 @@ function step!(simstate::Any,schedule::Schedule)
     end #while loop
 
 
-    @sync @distributed for e in cevents
+    #@sync @distributed
+    for e in cevents
+        #Double buffering on the event memory
         ce = deepcopy(e.first)
-        ce.step(simstate,e.first)
+        ce.step(schedule.simstate,e.first)
         if(!haskey(schedule.endevents,e.first))
             enqueue!(schedule.events, ce, Priority(ctime+1.0, e.second.priority))
         end
     end
+    #Reset the stopped events
     schedule.endevents = Dict{Agent,Agent}()
-
 end

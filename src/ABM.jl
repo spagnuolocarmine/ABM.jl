@@ -44,7 +44,7 @@ export Schedule,
         stop!,step!
 
 export SimState,
-        simulate!, update!, random
+        addfield!, simulate!, update!, random
 
 
 include("priority.jl")
@@ -57,22 +57,27 @@ include("field/real2d.jl")
 include("field/field.jl")
 include("field/field2d.jl")
 include("field/bounds.jl")
-include("schedule.jl")
 include("simstate.jl")
+include("schedule.jl")
+
 
 #TODO Add to schedule the interval for scheduling
 #TODO Agent function is bad to pass in the method also the agent other methods?
 #TODO Field2D implement et getNeighbors distances using square and circle
 #TODO More test for schedule and field2d
 
-
+"""
 function simulate!(simstate::SimState, nsteps)
     i = 1
     while i <= nsteps
-        print(string("[",simstate.schedule.steps,"] "))
+        print(string("[",schedule.steps,"] "))
         @time step!(simstate.schedule)
+        #Swap the fields status to the new one A = B
+        for field in simstate.fields
+            swapState!(field)
+        end
         i+=1
     end
 end
-
+"""
 end # module

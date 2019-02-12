@@ -19,31 +19,49 @@ Field2D(width::Real, height::Real,discretization::Real, toroidal::Bool) =
         Dict{Int2D,Dict{Union{Agent,Patch},Location}}(), Dict{Int2D,Dict{Union{Agent,Patch},Location}}(),
                                         Dict{Union{Agent,Patch},Int2D}(), Dict{Union{Agent,Patch},Int2D}())
 
+"""
+    Add/Update an object into the state B of the field, looking for the object
+    on the state A.
+"""
 function setObjectLocation!(f::Field2D, obj::Union{Agent,Patch}, pos::Position)
     if (pos == nothing || obj == nothing || f == nothing) return end
+    internalSetObjectLocation!(f,obj,pos, length(f.fB) == 0)
+end
+
+function internalSetObjectLocation!(f::Field2D, obj::Union{Agent,Patch}, pos::Position, isInit::Bool)
+
+    state = isInit ? f.fA :  f.fB
+    mapstate = isInit ? f.fOA :  f.fOB
+
     bag = discretize(pos,f.discretization)
 
-    if (haskey(f.fOA,obj))
+    if (haskey(mapstate,obj)) #Look inside the state A
 
-        if (@inbounds f.fA[f.fOA[obj]][obj].pos == pos)#the position is not changed
+        if (@inbounds state[mapstate[obj]][obj].pos == pos)#The position is not changed on the state A
             return true
         end
-        if (@inbounds f.fOA[obj] == bag)# if (fO.get(A) == bag) the agent is in the same bag but change the position
-            @inbounds f.fA[f.fOA[obj]][obj].pos = pos
+        if (@inbounds mapstate[obj] == bag)# if (fO.get(A) == bag) the agent is in the same bag but change the position
+            @inbounds state[mapstate[obj]][obj].pos = pos
             return true
         else
-            @inbounds remove!(f,obj)
+            #remove from field
+            @inbounds delete!(state[mapstate[obj]],obj)
+            @inbounds delete!(mapstate,obj)
         end
     end
-    if (!haskey(f.fA,bag))
-        @inbounds f.fA[bag] = Dict{Union{Agent,Patch},Location}()
+    if (!haskey(state,bag))
+        @inbounds state[bag] = Dict{Union{Agent,Patch},Location}()
     end
-    add!(f,obj,pos)
+
+    #add to the field
+    @inbounds state[bag][obj] = Location(pos,obj)
+    @inbounds mapstate[obj] = bag
 end
 
 """
     This method is inclusive, that means returns also objects at exactly the given distance.
     The search is made using a radial searching.
+    Look inside the state A.
 """
 function getNeighborsWithinDistance(f::Field2D, pos::Position, _distance::Real)
 
@@ -137,21 +155,6 @@ function getAllObjects(f::Field2D)
     values(f.fOA)
 end
 
-#TODO CHECK DB
-function add!(f::Field2D, obj::Union{Agent,Patch}, pos::Position)
-    #here we add the agent in the memory B for the next step
-    bag = discretize(pos,f.discretization)
-    @inbounds f.fA[bag][obj] = Location(pos,obj)
-    @inbounds f.fOA[obj] = bag
-end
-
-
-#TODO CHECK DB
-function remove!(f::Field2D, obj::Union{Agent,Patch})
-    #here we remove the agent from the memory B for the next step
-    @inbounds delete!(f.fA[f.fOA[obj]],obj)
-    @inbounds delete!(f.fOA,obj)
-end
 
 function swapState!(f::Field2D)
     @inbounds f.fB = f.fA

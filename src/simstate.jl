@@ -7,12 +7,11 @@ function random()
 end
 
 mutable struct SimState
-    schedule::Schedule
     fields::Vector{Field}
-    addField::Function
 end
+SimState() = SimState(Vector{Field}())
 
 
-function addfiled!(simstate::SimState,field::Field)
+function addfield!(simstate::SimState,field::Field)
     push!(simstate.fields,field)
 end
