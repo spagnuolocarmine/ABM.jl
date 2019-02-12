@@ -14,6 +14,7 @@ using Distributed
 using BenchmarkTools
 using Compat
 using Random
+using Distributions
 using UUIDs
 using DataStructures
 using LightGraphs
@@ -44,7 +45,9 @@ export Schedule,
         stop!,step!
 
 export SimState,
-        addfield!, simulate!, update!, random
+        addfield!, update!, random
+
+export simulate! #, @simulate
 
 
 include("priority.jl")
@@ -63,21 +66,19 @@ include("schedule.jl")
 
 #TODO Add to schedule the interval for scheduling
 #TODO Agent function is bad to pass in the method also the agent other methods?
-#TODO Field2D implement et getNeighbors distances using square and circle
 #TODO More test for schedule and field2d
 
-"""
-function simulate!(simstate::SimState, nsteps)
+function simulate!(schedule::Schedule, nsteps::Int)
     i = 1
-    while i <= nsteps
+    @time while i <= nsteps
         print(string("[",schedule.steps,"] "))
-        @time step!(simstate.schedule)
+        @time step!(schedule)
         #Swap the fields status to the new one A = B
-        for field in simstate.fields
+        for field in schedule. simstate.fields
             swapState!(field)
         end
         i+=1
     end
 end
-"""
+
 end # module

@@ -100,6 +100,7 @@ end
 """
 function step!(schedule::Schedule)
     schedule.steps+=1
+    if length(schedule.events) == 0 return end
     schedule.time = peek(schedule.events).second.time
     ctime = schedule.time #current simulation time given by the event with small time
     cevents = Vector{Pair{Agent,Priority}}() #current events to be scheduled for this time
