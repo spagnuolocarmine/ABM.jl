@@ -1,6 +1,7 @@
 using ABM
 using Revise
 using Distributions
+using BenchmarkTools
 
 simstate = SimState()
 myschedule = Schedule(simstate)
@@ -38,7 +39,7 @@ for i in 1:10000
     scheduleRepeating!(myschedule,boid)
 end
 
-simulate!(myschedule,100)
+@time simulate!(myschedule,3)
 
 """
 function consistency(neighborhood::Vector{Union{Agent,Patch}})

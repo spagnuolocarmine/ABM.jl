@@ -68,16 +68,14 @@ include("schedule.jl")
 #TODO Agent function is bad to pass in the method also the agent other methods?
 #TODO More test for schedule and field2d
 
-function simulate!(schedule::Schedule, nsteps::Int)
-    i = 1
-    @time while i <= nsteps
-        print(string("[",schedule.steps,"] "))
-        @time step!(schedule)
+function simulate!(schedule::Schedule, nsteps::Int64)
+    while schedule.steps < nsteps
+        println("[",schedule.steps,"] time: ",schedule.time)
+        step!(schedule)
         #Swap the fields status to the new one A = B
         for field in schedule. simstate.fields
             swapState!(field)
         end
-        i+=1
     end
 end
 
