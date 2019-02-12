@@ -25,38 +25,30 @@ Field2D(width::Real, height::Real,discretization::Real, toroidal::Bool) =
 """
 function setObjectLocation!(f::Field2D, obj::Union{Agent,Patch}, pos::Position)
     if (pos == nothing || obj == nothing || f == nothing) return end
-    internalSetObjectLocation!(f,obj,pos, length(f.fB) == 0)
-end
-
-function internalSetObjectLocation!(f::Field2D, obj::Union{Agent,Patch}, pos::Position, isInit::Bool)
-
-    state = isInit ? f.fA :  f.fB
-    mapstate = isInit ? f.fOA :  f.fOB
-
     bag = discretize(pos,f.discretization)
 
-    if (haskey(mapstate,obj)) #Look inside the state A
-
-        if (@inbounds state[mapstate[obj]][obj].pos == pos)#The position is not changed on the state A
+"""
+    if (haskey(f.fOA,obj)) #Look inside the state A
+        if (@inbounds f.fB[f.fOB[obj]][obj].pos == pos)#The position is not changed on the state A
             return true
         end
-        if (@inbounds mapstate[obj] == bag)# if (fO.get(A) == bag) the agent is in the same bag but change the position
-            @inbounds state[mapstate[obj]][obj].pos = pos
+        if (@inbounds f.fOB[obj] == bag)# if (fO.get(A) == bag) the agent is in the same bag but change the position
+            @inbounds f.fB[f.fOB[obj]][obj].pos = pos
             return true
-        else
-            #remove from field
-            @inbounds delete!(state[mapstate[obj]],obj)
-            @inbounds delete!(mapstate,obj)
+        else @inbounds remove!(f,obj)
         end
     end
-    if (!haskey(state,bag))
-        @inbounds state[bag] = Dict{Union{Agent,Patch},Location}()
-    end
+"""
 
-    #add to the field
-    @inbounds state[bag][obj] = Location(pos,obj)
-    @inbounds mapstate[obj] = bag
+    if haskey(f.fOB, obj)
+        remove!(f,obj)
+    end
+    if !haskey(f.fB,bag)
+        @inbounds f.fB[bag] = Dict{Union{Agent,Patch},Location}()
+    end
+    add!(f,obj,pos)
 end
+
 
 """
     This method is inclusive, that means returns also objects at exactly the given distance.
@@ -155,10 +147,43 @@ function getAllObjects(f::Field2D)
     values(f.fOA)
 end
 
+"""
+    Add an object to the state B.
+"""
+function add!(f::Field2D, obj::Union{Agent,Patch}, pos::Position)
+    bag = discretize(pos,f.discretization)
+    #here we add the agent in the memory B for the next step
+    @inbounds f.fB[bag][obj] = Location(pos,obj)
+    @inbounds f.fOB[obj] = bag
+end
+
+
+"""
+    Remove the object from the state A.
+"""
+function remove!(f::Field2D, obj::Union{Agent,Patch})
+    #here we remove the agent from the memory B for the next step
+    @inbounds delete!(f.fB[f.fOB[obj]],obj)
+    @inbounds delete!(f.fOB,obj)
+end
 
 function swapState!(f::Field2D)
-    @inbounds f.fB = f.fA
-    @inbounds f.fOB = f.fOA
+
+    for object in f.fOA
+        if !haskey(f.fOB, object.first)
+            bag = object.second
+            if !haskey(f.fB,bag) f.fB[bag] = Dict{Union{Agent,Patch},Location}() end 
+            @inbounds f.fB[bag][object.first] = Location(f.fA[bag][object.first].pos,object.first)
+            @inbounds f.fOB[object.first] = bag
+        end
+    end
+
+    @inbounds f.fA = f.fB
+    @inbounds f.fOA = f.fOB
+
+    f.fB = Dict{Int2D, Dict{Union{Agent,Patch},Location}}()
+    f.fOB = Dict{Union{Agent,Patch},Int2D}()
+    #TODO IF AN AGENT IS NOT MOVED DOES NOT APPEAR IN B AND WE HAVE TO CHECK in A
 end
 
 function clean!(f::Field2D)

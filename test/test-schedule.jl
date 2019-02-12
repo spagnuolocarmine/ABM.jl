@@ -4,7 +4,7 @@ end
 
 function fstep(state::Union{SimState, Nothing}, agent::Agent)
     #print(string(agent.state.name," ",agent.id,"\n"))
-    println(state.fields)
+    #println(state.fields)
 end
 
 a1 = Agent(fstep,memory("Bob"))
