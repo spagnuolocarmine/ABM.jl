@@ -3,7 +3,7 @@ struct memory
 end
 
 function fstep(state::Union{SimState, Nothing}, agent::Agent)
-    #print(string(agent.data.name," ",agent.id,"\n"))
+    #print(string(agent.state.name," ",agent.id,"\n"))
 end
 
 a1 = Agent(fstep,memory("Bob"))
@@ -13,13 +13,13 @@ a3 = Agent(fstep,memory("Kraken"))
 schedule = Schedule()
 
 scheduleOnce!(schedule,a1)
-@test a1.stop == true
-scheduleRepeating!(schedule,a2,1)
-@test a2.stop == false
-scheduleRepeating!(schedule,a3,4.0)
-@test a3.stop == false
 
-for i = 1:5
+scheduleRepeating!(schedule,a2,1)
+
+scheduleRepeating!(schedule,a3,4.0)
+
+
+for i = 1:4
     #println("step ",i)
     step!(nothing, schedule)
 end

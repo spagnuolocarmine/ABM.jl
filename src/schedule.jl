@@ -20,6 +20,7 @@ Schedule()
 
 mutable struct Schedule
     events::PriorityQueue{Agent,Priority}
+    endevents::Dict{Agent,Agent}
     steps::Int64
     time::Float64
 
@@ -31,34 +32,38 @@ end
 Construct `Schedule` with empty events list and initial time 0.0.
 
 """
-Schedule() = Schedule(PriorityQueue{Agent,Priority}(),0,0.0)
+Schedule() = Schedule(PriorityQueue{Agent,Priority}(),Dict{Agent,Agent}(),0,0.0)
 
 """
 """
 function scheduleOnce!(schedule::Schedule,agent::Agent)
-    agent.stop = true
+    push!(schedule.endevents,agent=>agent)
     enqueue!(schedule.events, agent, Priority(schedule.time+1.0,0))
 end
 
 """
 """
 function scheduleOnce!(schedule::Schedule,agent::Agent, ordering::Int)
-    agent.stop = true
+    push!(schedule.endevents,agent=>agent)
     enqueue!(schedule.events, agent, Priority(schedule.time+1.0,ordering))
 end
 
 """
 """
 function scheduleOnce!(schedule::Schedule,agent::Agent, time::Float64)
-    agent.stop = true
+    push!(schedule.endevents,agent=>agent)
     enqueue!(schedule.events, agent, Priority(time,0))
 end
 
 """
 """
 function scheduleOnce!(schedule::Schedule,agent::Agent, time::Float64, ordering::Int)
-    agent.stop = true
+    push!(schedule.endevents,agent=>agent)
     enqueue!(schedule.events, agent, Priority(time,ordering))
+end
+
+function stop!(schedule::Schedule,agent::Agent)
+    push!(schedule.endevents,agent=>agent)
 end
 
 """
@@ -106,12 +111,14 @@ function step!(simstate::Any,schedule::Schedule)
         push!(cevents,event)
     end #while loop
 
+
     @sync @distributed for e in cevents
         ce = deepcopy(e.first)
-        @async ce.step(simstate,e.first)
-        @async if(!ce.stop)
+        ce.step(simstate,e.first)
+        if(!haskey(schedule.endevents,e.first))
             enqueue!(schedule.events, ce, Priority(ctime+1.0, e.second.priority))
         end
     end
+    schedule.endevents = Dict{Agent,Agent}()
 
 end

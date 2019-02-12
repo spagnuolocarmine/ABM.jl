@@ -2,10 +2,12 @@ using ABM
 using Test
 using DataStructures
 using Distributed
+using DistributedArrays
 
 const testdir = dirname(@__FILE__)
 
-#addprocs(4);
+#addprocs(4)
+
 
 tests = [
     "priority",

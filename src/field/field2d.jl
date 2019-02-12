@@ -14,8 +14,6 @@ mutable struct Field2D <: Field
 
 end
 
-
-
 Field2D(width::Real, height::Real,discretization::Real, toroidal::Bool) =
     Field2D(width, height, discretization,toroidal,
         Dict{Int2D,Dict{Union{Agent,Patch},Location}}(), Dict{Int2D,Dict{Union{Agent,Patch},Location}}(),

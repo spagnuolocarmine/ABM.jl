@@ -17,9 +17,9 @@ using Random
 using UUIDs
 using DataStructures
 using LightGraphs
+using DistributedArrays
 
-export Agent,
-        stop!
+export Agent
 export Patch
 
 export Position
@@ -41,7 +41,7 @@ export Bounds,
 export Priority
 export Schedule,
         scheduleOnce!, scheduleRepeating!,
-        step!
+        stop!,step!
 
 export SimState,
         simulate!, update!, random
