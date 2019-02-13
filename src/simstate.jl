@@ -1,10 +1,5 @@
 
 
-rng = MersenneTwister(1234);
-
-function random()
-    rng
-end
 
 mutable struct SimState
     fields::Vector{Field}
