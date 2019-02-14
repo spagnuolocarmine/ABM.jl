@@ -2,29 +2,29 @@
     Field2D(...)
 """
 
-mutable struct Field2D{T<:Real,D<:Real} <: Field
+mutable struct Field2D{T<:Real,D<:Real,A,P} <: Field
     width::T
     height::T
     discretization::D
     toroidal::Bool
-    fA::Dict{Int2D, Dict{Union{Agent,Patch},Location}}
-    fB::Dict{Int2D, Dict{Union{Agent,Patch},Location}}
-    fOA::Dict{Union{Agent,Patch},Int2D}
-    fOB::Dict{Union{Agent,Patch},Int2D}
+    fA::Dict{Int2D, Dict{Union{Agent{A},Patch{P}},Location{Real2D{T}}}}
+    fB::Dict{Int2D, Dict{Union{Agent{A},Patch{P}},Location{Real2D{T}}}}
+    fOA::Dict{Union{Agent{A},Patch{P}},Int2D}
+    fOB::Dict{Union{Agent{A},Patch{P}},Int2D}
+    Field2D{T,D,A,P}(width::T, height::T,discretization::D, toroidal::Bool) where {T<:Real,D<:Real,A,P} =
+        new{T,D,A,P}(width, height, discretization,toroidal,
+            Dict{Int2D,Dict{Union{Agent{A},Patch{P}},Location{Real2D{T}}}}(), Dict{Int2D,Dict{Union{Agent{A},Patch{P}},Location{Real2D{T}}}}(),
+                                            Dict{Union{Agent{A},Patch{P}},Int2D}(), Dict{Union{Agent{A},Patch{P}},Int2D}())
 
 end
 
-Field2D(width::T, height::T,discretization::D, toroidal::Bool) where {T<:Real,D<:Real} =
-    Field2D{T,D}(width, height, discretization,toroidal,
-        Dict{Int2D,Dict{Union{Agent,Patch},Location}}(), Dict{Int2D,Dict{Union{Agent,Patch},Location}}(),
-                                        Dict{Union{Agent,Patch},Int2D}(), Dict{Union{Agent,Patch},Int2D}())
 
 """
     Add/Update an object into the state B of the field, looking for the object
     on the state A.
 """
-function setObjectLocation!(f::Field2D{T,D}, obj::Union{Agent,Patch}, pos::Position) where {T<:Real,D<:Real}
-    if (pos == nothing || obj == nothing || f == nothing) return end
+function setObjectLocation!(f::Field2D{T,D,A,P}, obj::Union{Agent{A},Patch{P}}, pos::Real2D{T}) where {T<:Real,D<:Real,A,P }
+    #if (pos == nothing || obj == nothing || f == nothing) return end
     bag = discretize(pos,f.discretization)
 
 """
@@ -44,7 +44,8 @@ function setObjectLocation!(f::Field2D{T,D}, obj::Union{Agent,Patch}, pos::Posit
         remove!(f,obj)
     end
     if !haskey(f.fB,bag)
-        @inbounds f.fB[bag] = Dict{Union{Agent,Patch},Location}()
+        #@inbounds
+        f.fB[bag] = Dict{Union{Agent{A},Patch{A}},Location{Real2D{T}}}()
     end
     add!(f,obj,pos)
 end
@@ -55,7 +56,7 @@ end
     The search is made using a radial searching.
     Look inside the state A.
 """
-function getNeighborsWithinDistance(f::Field2D{T,D}, pos::Position, _distance::T) where {T<:Real,D<:Real}
+function getNeighborsWithinDistance(f::Field2D{T,D,A,P}, pos::Real2D{T}, _distance::T) where {T<:Real,D<:Real,A,P}
 
     if _distance <= 0.0 return nothing end
 
@@ -82,11 +83,13 @@ function getNeighborsWithinDistance(f::Field2D{T,D}, pos::Position, _distance::T
     end #!isToroidal
     #for i = minI:maxI, j = minJ:maxJ
     #@sync @distributed
-    for (i,j) in collect(Iterators.product(minI:maxI, minJ:maxJ))
+    for (i,j) in Iterators.product(minI:maxI, minJ:maxJ)
             bagID = Int2D(tTransform(i,maxX),tTransform(j,maxY))
             if (haskey(f.fA, bagID))
-                @inbounds b = Bounds(f, bagID)
-                @inbounds bag = f.fA[bagID] #Dict{Union{Agent,Patch},Location}
+                #@inbounds
+                b = Bounds(f, bagID)
+                #@inbounds
+                bag = f.fA[bagID] #Dict{Union{Agent,Patch},Location}
                 check = checkBoundCircle(b, pos, _distance, f.toroidal)
                 if check == 1
                     append!(result, keys(bag))
@@ -111,7 +114,7 @@ end
 
 
 
-function getObjectsAtLocation(f::Field2D{T,D}, pos::Position) where {T<:Real,D<:Real}
+function getObjectsAtLocation(f::Field2D{T,D,A,P}, pos::Real2D{T}) where {T<:Real,D<:Real,A,P}
     if (pos == nothing || f == nothing) return nothing end
     bag = discretize(pos,f.discretization)
     if (!haskey(f.fA,bag)) return nothing end
@@ -123,7 +126,7 @@ function getObjectsAtLocation(f::Field2D{T,D}, pos::Position) where {T<:Real,D<:
     end
     result
 end
-function numObjectsAtLocation(f::Field2D{T,D}, pos::Position) where {T<:Real,D<:Real}
+function numObjectsAtLocation(f::Field2D{T,D,A,P}, pos::Real2D{T}) where {T<:Real,D<:Real,A,P}
     if (pos == nothing || f == nothing) return nothing end
     bag = discretize(pos,f.discretization)
     if (!haskey(f.fA,bag)) return nothing end
@@ -136,11 +139,13 @@ function numObjectsAtLocation(f::Field2D{T,D}, pos::Position) where {T<:Real,D<:
     length(result)
 end
 
-function getObjectLocation(f::Field2D{T,D}, obj::Union{Agent,Patch}) where {T<:Real,D<:Real}
-    if (obj == nothing || f == nothing) return nothing end
+function getObjectLocation(f::Field2D{T,D,A,P}, obj::Union{Agent{A},Patch{P}}) where {T<:Real,D<:Real,A,P}
+    #if (obj == nothing || f == nothing) return nothing end
     if (!haskey(f.fOA,obj)) return nothing end
-    @inbounds bag = f.fOA[obj]
-    @inbounds f.fA[bag][obj].pos
+    #@inbounds
+    bag = f.fOA[obj]
+    #@inbounds
+    f.fA[bag][obj].pos
 end
 
 function getAllObjects(f::Field2D)
@@ -150,47 +155,53 @@ end
 """
     Add an object to the state B.
 """
-function add!(f::Field2D{T,D}, obj::Union{Agent,Patch}, pos::Position) where {T<:Real,D<:Real}
+function add!(f::Field2D{T,D,A,P}, obj::Union{Agent{A},Patch{P}}, pos::Real2D{T}) where {T<:Real,D<:Real,A,P}
     bag = discretize(pos,f.discretization)
     #here we add the agent in the memory B for the next step
-    @inbounds f.fB[bag][obj] = Location(pos,obj)
-    @inbounds f.fOB[obj] = bag
+    #@inbounds
+    f.fB[bag][obj] = Location(pos,obj)
+    #@inbounds
+    f.fOB[obj] = bag
 end
 
 
 """
     Remove the object from the state A.
 """
-function remove!(f::Field2D{T,D}, obj::Union{Agent,Patch}) where {T<:Real,D<:Real}
+function remove!(f::Field2D{T,D,A,P}, obj::Union{Agent{A},Patch{P}}) where {T<:Real,D<:Real,A,P}
     #here we remove the agent from the memory B for the next step
-    @inbounds delete!(f.fB[f.fOB[obj]],obj)
-    @inbounds delete!(f.fOB,obj)
+    #@inbounds
+    delete!(f.fB[f.fOB[obj]],obj)
+    #@inbounds
+    delete!(f.fOB,obj)
 end
 
-function swapState!(f::Field2D{T,D}) where {T<:Real,D<:Real}
+function swapState!(f::Field2D{T,D,A,P}) where {T<:Real,D<:Real,A,P}
 
     for object in f.fOA
         if !haskey(f.fOB, object.first)
             bag = object.second
             if !haskey(f.fB,bag) f.fB[bag] = Dict{Union{Agent,Patch},Location}() end
-            @inbounds f.fB[bag][object.first] = Location(f.fA[bag][object.first].pos,object.first)
-            @inbounds f.fOB[object.first] = bag
+            #@inbounds
+            f.fB[bag][object.first] = Location(f.fA[bag][object.first].pos,object.first)
+            #@inbounds
+            f.fOB[object.first] = bag
         end
     end
 
-    @inbounds f.fA = f.fB
-    @inbounds f.fOA = f.fOB
+    f.fA = f.fB
+    f.fOA = f.fOB
 
     f.fB = Dict{Int2D, Dict{Union{Agent,Patch},Location}}()
     f.fOB = Dict{Union{Agent,Patch},Int2D}()
     #TODO IF AN AGENT IS NOT MOVED DOES NOT APPEAR IN B AND WE HAVE TO CHECK in A
 end
 
-function clean!(f::Field2D{T,D}) where {T<:Real,D<:Real}
-    f.fA = Dict{Int2D, Dict{Union{Agent,Patch},Location}}()
-    f.fB = Dict{Int2D, Dict{Union{Agent,Patch},Location}}()
-    f.fOA = Dict{Union{Agent,Patch},Int2D}()
-    f.fOB = Dict{Union{Agent,Patch},Int2D}()
+function clean!(f::Field2D{T,D,A,P}) where {T<:Real,D<:Real,A,P}
+    f.fA = Dict{Int2D, Dict{Union{Agent{A},Patch{P}},Location{Real2D{T}}}}()
+    f.fB = Dict{Int2D, Dict{Union{Agent{A},Patch{P}},Location{Real2D{T}}}}()
+    f.fOA = Dict{Union{Agent{A},Patch{P}},Int2D}()
+    f.fOB = Dict{Union{Agent{A},Patch{P}},Int2D}()
 end
 
 

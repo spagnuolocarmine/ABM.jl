@@ -72,10 +72,10 @@ function step!(schedule::Schedule)
     cevents = Vector{Pair{Agent,Priority}}() #current events to be scheduled for this time
     while true
         if(isempty(schedule.events)) break end # no other events in the scheduling queue
-        @inbounds event = peek(schedule.events)
+        event = peek(schedule.events)
         if(event.second.time > schedule.time) break end #no other events for currenttime
         ctime = event.second.time
-        @inbounds dequeue!(schedule.events)
+        dequeue!(schedule.events)
         push!(cevents,event)
     end #while loop
 

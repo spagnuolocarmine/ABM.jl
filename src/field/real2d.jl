@@ -1,6 +1,6 @@
 import Base:  +, -, ==, hash
 #Position on a 2D space wiht continuouns coordinate system
-struct Real2D{T<:Real} <: Position
+mutable struct Real2D{T<:Real} <: Position
     x::T
     y::T
 end
