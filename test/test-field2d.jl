@@ -99,7 +99,7 @@ setObjectLocation!(f4,Patch(nothing),Real2D(2.9,8.0))
 swapState!(f4)
 @test length(getNeighborsWithinDistance(f4,  Real2D(0.1,5.0) , __distance)) == 2
 
-@test length(getNeighborsWithinDistance(f4,  Real2D(0.1,5.0) , 5)) == 9
+@test length(getNeighborsWithinDistance(f4,  Real2D(0.1,5.0) , 5.0)) == 9
 
 
 f5 = Field2D(10.0,10.0,0.6,true)

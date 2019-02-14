@@ -1,4 +1,4 @@
-struct memory
+struct Memory
     name::String
 end
 
@@ -7,15 +7,15 @@ function fstep(state::Union{SimState, Nothing}, agent::Agent)
     #println(state.fields)
 end
 
-a1 = Agent(fstep,memory("Bob"))
-a2 = Agent(fstep,memory("Alice"))
-a3 = Agent(fstep,memory("Kraken"))
+a1 = Agent(fstep,Memory("Bob"))
+a2 = Agent(fstep,Memory("Alice"))
+a3 = Agent(fstep,Memory("Kraken"))
 
 schedule = Schedule(SimState())
 
 scheduleOnce!(schedule,a1)
 
-scheduleRepeating!(schedule,a2,1)
+scheduleRepeating!(schedule,a2;ordering=1)
 
 scheduleRepeating!(schedule,a3,4.0)
 

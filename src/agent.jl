@@ -2,12 +2,12 @@ import Base:  ==, hash
 """
     Agent()
 """
-struct Agent
+struct Agent{T}
     step::Function
-    state::Any
-    id::String
+    state::T
+    id::UUID
 end
-Agent(step::Function,data::Any) = Agent(step,data,string(UUIDs.uuid4(random())))
+Agent(step::Function, data::T, rng::AbstractRNG=Random.GLOBAL_RNG) where T = Agent{T}(step, data, UUIDs.uuid4(rng))
 
 function ==(agent1::Agent, agent2::Agent)
     agent1.id==agent2.id

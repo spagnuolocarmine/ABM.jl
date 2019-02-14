@@ -1,5 +1,3 @@
-__precompile__()
-
 """
 ABM is a multi agent based simulation engine.
 

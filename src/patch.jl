@@ -2,14 +2,10 @@ import Base:  ==, hash
 """
     Patch()
 """
-mutable struct Patch
-    state::Any
-    id::String
-    function Patch(data::Any)
-        patch = new(data)
-        patch.id = string(UUIDs.uuid4(random()))
-        return patch
-    end
+mutable struct Patch{T}
+    state::T
+    id::UUID
+    Patch(data::T, rng::AbstractRNG=Random.GLOBAL_RNG) where T = new{T}(data,UUIDs.uuid4(rng))
 end
 
 function ==(patch1::Patch, patch2::Patch)

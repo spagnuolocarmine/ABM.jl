@@ -14,7 +14,9 @@ and the agents can see the status of the other agents consistent with the curren
 
 **Constructors**
 
-Schedule()
+    Schedule()
+
+Construct `Schedule` with empty events list and initial time 0.0.
 
 """
 
@@ -24,43 +26,19 @@ mutable struct Schedule
     endevents::Dict{Agent,Agent}
     steps::Int64
     time::Float64
-
+    Schedule(simstate::SimState) =
+        new(simstate,PriorityQueue{Agent,Priority}(), Dict{Agent,Agent}(), 0, 0.0)
 end
 
 """
-    Schedule()
+    scheduleOnce!(schedule::Schedule, agent::Agent, time::Float64=1.0; ordering::Int=0)
 
-Construct `Schedule` with empty events list and initial time 0.0.
-
+Schedules the `agent` agent to act at the `schedule` at time interval `time`
+in the order for the given time  `ordering`.
 """
-Schedule(simstate::SimState) = Schedule(simstate,PriorityQueue{Agent,Priority}(),Dict{Agent,Agent}(),0,0.0)
-
-"""
-"""
-function scheduleOnce!(schedule::Schedule,agent::Agent)
+function scheduleOnce!(schedule::Schedule, agent::Agent, time::Float64=1.0; ordering::Int=0)
     push!(schedule.endevents,agent=>agent)
-    enqueue!(schedule.events, agent, Priority(schedule.time+1.0,0))
-end
-
-"""
-"""
-function scheduleOnce!(schedule::Schedule,agent::Agent, ordering::Int)
-    push!(schedule.endevents,agent=>agent)
-    enqueue!(schedule.events, agent, Priority(schedule.time+1.0,ordering))
-end
-
-"""
-"""
-function scheduleOnce!(schedule::Schedule,agent::Agent, time::Float64)
-    push!(schedule.endevents,agent=>agent)
-    enqueue!(schedule.events, agent, Priority(time,0))
-end
-
-"""
-"""
-function scheduleOnce!(schedule::Schedule,agent::Agent, time::Float64, ordering::Int)
-    push!(schedule.endevents,agent=>agent)
-    enqueue!(schedule.events, agent, Priority(time,ordering))
+    enqueue!(schedule.events, agent, Priority(schedule.time+time,0))
 end
 
 function stop!(schedule::Schedule,agent::Agent)
@@ -68,25 +46,13 @@ function stop!(schedule::Schedule,agent::Agent)
 end
 
 """
-"""
-function scheduleRepeating!(schedule::Schedule,agent::Agent)
-    enqueue!(schedule.events, agent, Priority(schedule.time+1.0,0))
-end
-"""
-"""
-function scheduleRepeating!(schedule::Schedule,agent::Agent,ordering::Int)
-    enqueue!(schedule.events, agent, Priority(schedule.time+1.0,ordering))
-end
+    scheduleRepeating!(schedule::Schedule, agent::Agent, time::Float64=1.0; ordering::Int=0)
+
+Schedules the `agent` agent to repeatedly act at the `schedule` at time interval `time`
+in the order for the given time  `ordering`.
 
 """
-"""
-function scheduleRepeating!(schedule::Schedule,agent::Agent, time::Float64)
-    enqueue!(schedule.events, agent, Priority(time,0))
-end
-
-"""
-"""
-function scheduleRepeating!(schedule::Schedule,agent::Agent, time::Float64, ordering::Int)
+function scheduleRepeating!(schedule::Schedule, agent::Agent, time::Float64=1.0; ordering::Int=0)
     enqueue!(schedule.events, agent, Priority(time,ordering))
 end
 
