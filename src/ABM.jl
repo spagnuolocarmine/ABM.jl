@@ -22,7 +22,7 @@ export Agent
 export Patch
 
 export Position
-export Real2D, Int2D,
+export Real2D,
         toroidal, distance
 
 
@@ -53,7 +53,7 @@ include("agent.jl")
 include("patch.jl")
 include("field/position.jl")
 include("field/location.jl")
-include("field/int2d.jl")
+
 include("field/real2d.jl")
 include("field/field.jl")
 include("field/field2d.jl")

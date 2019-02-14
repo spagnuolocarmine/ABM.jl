@@ -7,17 +7,17 @@ mutable struct Field2D{T<:Real,D<:Real} <: Field
     height::T
     discretization::D
     toroidal::Bool
-    fA::Dict{Int2D, Dict{Union{Agent,Patch},Location}}
-    fB::Dict{Int2D, Dict{Union{Agent,Patch},Location}}
-    fOA::Dict{Union{Agent,Patch},Int2D}
-    fOB::Dict{Union{Agent,Patch},Int2D}
+    fA::Dict{Real2D{Int}, Dict{Union{Agent,Patch},Location}}
+    fB::Dict{Real2D{Int}, Dict{Union{Agent,Patch},Location}}
+    fOA::Dict{Union{Agent,Patch},Real2D{Int}}
+    fOB::Dict{Union{Agent,Patch},Real2D{Int}}
 
 end
 
 Field2D(width::T, height::T,discretization::D, toroidal::Bool) where {T<:Real,D<:Real} =
     Field2D{T,D}(width, height, discretization,toroidal,
-        Dict{Int2D,Dict{Union{Agent,Patch},Location}}(), Dict{Int2D,Dict{Union{Agent,Patch},Location}}(),
-                                        Dict{Union{Agent,Patch},Int2D}(), Dict{Union{Agent,Patch},Int2D}())
+        Dict{Real2D{Int},Dict{Union{Agent,Patch},Location}}(), Dict{Real2D{Int},Dict{Union{Agent,Patch},Location}}(),
+                                        Dict{Union{Agent,Patch},Real2D{Int}}(), Dict{Union{Agent,Patch},Real2D{Int}}())
 
 """
     Add/Update an object into the state B of the field, looking for the object
@@ -83,7 +83,7 @@ function getNeighborsWithinDistance(f::Field2D{T,D}, pos::Position, _distance::T
     #for i = minI:maxI, j = minJ:maxJ
     #@sync @distributed
     for (i,j) in collect(Iterators.product(minI:maxI, minJ:maxJ))
-            bagID = Int2D(tTransform(i,maxX),tTransform(j,maxY))
+            bagID = Real2D{Int}(tTransform(i,maxX),tTransform(j,maxY))
             if (haskey(f.fA, bagID))
                 @inbounds b = Bounds(f, bagID)
                 @inbounds bag = f.fA[bagID] #Dict{Union{Agent,Patch},Location}
@@ -181,19 +181,19 @@ function swapState!(f::Field2D{T,D}) where {T<:Real,D<:Real}
     @inbounds f.fA = f.fB
     @inbounds f.fOA = f.fOB
 
-    f.fB = Dict{Int2D, Dict{Union{Agent,Patch},Location}}()
-    f.fOB = Dict{Union{Agent,Patch},Int2D}()
+    f.fB = Dict{Real2D{Int}, Dict{Union{Agent,Patch},Location}}()
+    f.fOB = Dict{Union{Agent,Patch},Real2D{Int}}()
     #TODO IF AN AGENT IS NOT MOVED DOES NOT APPEAR IN B AND WE HAVE TO CHECK in A
 end
 
 function clean!(f::Field2D{T,D}) where {T<:Real,D<:Real}
-    f.fA = Dict{Int2D, Dict{Union{Agent,Patch},Location}}()
-    f.fB = Dict{Int2D, Dict{Union{Agent,Patch},Location}}()
-    f.fOA = Dict{Union{Agent,Patch},Int2D}()
-    f.fOB = Dict{Union{Agent,Patch},Int2D}()
+    f.fA = Dict{Real2D{Int}, Dict{Union{Agent,Patch},Location}}()
+    f.fB = Dict{Real2D{Int}, Dict{Union{Agent,Patch},Location}}()
+    f.fOA = Dict{Union{Agent,Patch},Real2D{Int}}()
+    f.fOB = Dict{Union{Agent,Patch},Real2D{Int}}()
 end
 
 
 function discretize(p::Real2D{T}, discretization::T) where {T<:Real}
-    Int2D(convert(Int, floor(p.x/discretization)), convert(Int, floor(p.y/discretization)));
+    Real2D{Int}(convert(Int, floor(p.x/discretization)), convert(Int, floor(p.y/discretization)));
 end

@@ -22,7 +22,7 @@ function fstep(state::SimState, agent::Agent)
     end
     agent.state.orientation = mypos
     newpos =  Real2D(rand(Uniform(0, width)),rand(Uniform(0, height)))
-    setObjectLocation!(field, agent, newpos)
+    ]setObjectLocation!(field, agent, newpos)
 end
 
 mutable struct BoidData
@@ -39,7 +39,19 @@ for i in 1:10000
     scheduleRepeating!(myschedule,boid)
 end
 
-@time simulate!(myschedule,3)
+using Profile
+
+@profile simulate!(myschedule,3)
+
+"""@time while myschedule.steps < 3
+    println("[",myschedule.steps,"] time: ",myschedule.time)
+    @time step!(myschedule)
+    #Swap the fields status to the new one A = B
+    @time for field in myschedule.simstate.fields
+        swapState!(field)
+    end
+end"""
+
 
 """
 function consistency(neighborhood::Vector{Union{Agent,Patch}})

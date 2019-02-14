@@ -10,7 +10,7 @@ struct Bounds{T<:Real, P<:Position, F<:Field}
     sw::P
     se::P
     f::F
-    function Bounds(f::Field2D{T}, bagID::Int2D) where {T<:Real}
+    function Bounds(f::Field2D{T}, bagID::Real2D{Int}) where {T<:Real}
         nw = Real2D{T}(bagID.x * f.discretization, bagID.y * f.discretization)
         ne = Real2D{T}(nw.x, min(nw.y + f.discretization, f.height))
         sw = Real2D{T}(min(nw.x+f.discretization, f.width), nw.y)
