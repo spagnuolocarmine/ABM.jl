@@ -5,8 +5,8 @@ using BenchmarkTools
 
 simstate = SimState()
 myschedule = Schedule(simstate)
-width = 150
-height = 150
+width = 150.0
+height = 150.0
 neighborhood_distance = 10.0
 jump = 0.7
 
@@ -22,7 +22,7 @@ function fstep(state::SimState, agent::Agent)
     end
     agent.state.orientation = mypos
     newpos =  Real2D(rand(Uniform(0, width)),rand(Uniform(0, height)))
-    ]setObjectLocation!(field, agent, newpos)
+    setObjectLocation!(field, agent, newpos)
 end
 
 mutable struct BoidData
