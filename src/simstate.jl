@@ -1,6 +1,6 @@
-
-
-
+"""
+    SimState
+"""
 mutable struct SimState
     fields::Vector{Field}
 end
