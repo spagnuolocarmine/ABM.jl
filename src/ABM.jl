@@ -32,7 +32,7 @@ export Field2D,
         setObjectLocation!,
         getObjectLocation, getObjectsAtLocation, getNeighborsWithinDistance, getAllObjects,
         numObjectsAtLocation,
-        remove!, clean!, swapState!
+        remove!, clean!
 export Network
 export Bounds,
         checkBoundCircle

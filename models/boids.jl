@@ -39,9 +39,17 @@ for i in 1:10000
     scheduleRepeating!(myschedule,boid)
 end
 
-using Profile
 
-@profile simulate!(myschedule,3)
+@time simulate!(myschedule,10)
+
+using Profile
+#using ProfileView
+#using Juno
+Profile.init(delay=0.0005)
+Profile.clear()
+#Profile.@profile simulate!(myschedule,7);
+#ProfileView.view()
+@profiler simulate!(myschedule,7);
 
 """@time while myschedule.steps < 3
     println("[",myschedule.steps,"] time: ",myschedule.time)

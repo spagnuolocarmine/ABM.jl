@@ -83,7 +83,8 @@ function step!(schedule::Schedule)
     #@sync @distributed
     for e in cevents
         #Double buffering on the event memory
-        ce = deepcopy(e.first)
+    #    ce = deepcopy(e.first)
+        ce = e.first
         ce.step(schedule.simstate,e.first)
         if(!haskey(schedule.endevents,e.first))
             enqueue!(schedule.events, ce, Priority(ctime+1.0, e.second.priority))
