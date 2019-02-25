@@ -75,7 +75,10 @@ function getNeighborsWithinDistance(f::Field2D{T,D}, pos::Position, _distance::T
     maxX = convert(Int, ceil(f.width/f.discretization)) #number of bag
     maxY = convert(Int, ceil(f.height/f.discretization)) #number of bag
 
-    result = Vector{Union{Agent,Patch}}()
+    result = Array{Union{Agent,Patch},1}()
+
+
+    #Vector{Union{Agent,Patch}}()
 
     if !f.toroidal
         minI = max(0, discPos.x - discDistance)
@@ -84,27 +87,29 @@ function getNeighborsWithinDistance(f::Field2D{T,D}, pos::Position, _distance::T
         maxJ = min(discPos.y + discDistance, maxY - 1)
 
     else
-        minI = discPos.x - discDistance - 1
-        maxI = discPos.x + discDistance + 1
-        minJ = discPos.y - discDistance -1
-        maxJ = discPos.y + discDistance + 1
+        minI = discPos.x - discDistance
+        maxI = discPos.x + discDistance
+        minJ = discPos.y - discDistance
+        maxJ = discPos.y + discDistance
 
     end #!isToroidal
     #for i = minI:maxI, j = minJ:maxJ
     #@sync @distributed
+    #println(discPos," ",minI," ",maxI," ",minJ," ",maxJ," ")
     for (i,j) in collect(Iterators.product(minI:maxI, minJ:maxJ))
             bagID = Real2D{Int}(tTransform(i,maxX),tTransform(j,maxY))
+
             if (haskey(f.f, bagID))
                 @inbounds b = Bounds(f, bagID)
                 @inbounds bag = f.f[bagID] #Dict{Union{Agent,Patch},Location}
                 check = checkBoundCircle(b, pos, _distance, f.toroidal)
                 if check == 1
-                    append!(result, keys(bag))
+                    @inbounds append!(result, keys(bag))
                 elseif check == 0
-                    for obj in bag
-                        if distance(obj.second.pos, pos, f.width, f.height, f.toroidal) <= _distance
-                            push!(result, obj.first)
-                        end
+                    for obj in values(bag)
+                        if distance(obj.pos, pos, f.width, f.height, f.toroidal) <= _distance
+                             @inbounds push!(result, obj.object)
+                         end
                     end
                 end
             end
@@ -156,8 +161,6 @@ end
 function getAllObjects(f::Field2D)
     values(f.fO)
 end
-
-
 
 
 function clean!(f::Field2D{T,D}) where {T<:Real,D<:Real}

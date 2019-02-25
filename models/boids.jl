@@ -16,9 +16,11 @@ addfield!(simstate,field)
 
 function fstep(state::SimState, agent::Agent)
     mypos = agent.state.pos #getObjectLocation(field, agent)
-    neighborhood = getNeighborsWithinDistance(field, mypos, neighborhood_distance)
+    #@time
+   neighborhood = getNeighborsWithinDistance(field, mypos, neighborhood_distance)
+  # println("n: ",length(neighborhood))
     for neighboring in neighborhood
-        #println(agent.state.name," ",agent.id," ",neighboring.id)
+    #    println(agent.state.name," ",agent.id," ",neighboring.id)
     end
     agent.state.orientation = mypos
     newpos =  Real2D(rand(Uniform(0, width)),rand(Uniform(0, height)))
@@ -32,24 +34,48 @@ mutable struct BoidData
 end
 
 for i in 1:10000
-    pos = Real2D(rand(Uniform(0, width)),rand(Uniform(0, height)))
+    pos = Real2D(rand(Uniform(0, width)), rand(Uniform(0, height)))
     d = BoidData("Boid", pos, Real2D(rand(Uniform(0, width)),rand(Uniform(0, height))))
     boid = Agent(fstep,d)
     setObjectLocation!(field, boid, pos)
-    scheduleRepeating!(myschedule,boid)
+    #if i == 1
+        scheduleRepeating!(myschedule,boid)
+    #end
 end
 
 
-@time simulate!(myschedule,10)
+#@time simulate!(myschedule,10)
 
 using Profile
 #using ProfileView
-#using Juno
-Profile.init(delay=0.0005)
+using Juno
+Profile.init(delay=0.0005, n = 10^7)
+
 Profile.clear()
-#Profile.@profile simulate!(myschedule,7);
-#ProfileView.view()
-@profiler simulate!(myschedule,7);
+# @time Profile.@profile simulate!(myschedule,10);
+# Juno.profiler()
+
+# @time step!(myschedule)
+# println("size ",length(field.fO))
+# @time step!(myschedule)
+# println("size ",length(field.fO))
+# @time step!(myschedule)
+# println("size ",length(field.fO))
+#
+
+
+
+@time  simulate!(myschedule,10);
+
+
+
+
+
+
+
+
+
+
 
 """@time while myschedule.steps < 3
     println("[",myschedule.steps,"] time: ",myschedule.time)

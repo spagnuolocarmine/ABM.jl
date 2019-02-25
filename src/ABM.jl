@@ -70,10 +70,7 @@ function simulate!(schedule::Schedule, nsteps::Int64)
     while schedule.steps < nsteps
         println("[",schedule.steps,"] time: ",schedule.time)
         step!(schedule)
-        #Swap the fields status to the new one A = B
-        for field in schedule. simstate.fields
-            swapState!(field)
-        end
+
     end
 end
 
