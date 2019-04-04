@@ -19,9 +19,9 @@ function fstep(state::SimState, agent::Agent)
     #@time
    neighborhood = getNeighborsWithinDistance(field, mypos, neighborhood_distance)
   # println("n: ",length(neighborhood))
-    for neighboring in neighborhood
+    #for neighboring in neighborhood
     #    println(agent.state.name," ",agent.id," ",neighboring.id)
-    end
+    #end
     agent.state.orientation = mypos
     newpos =  Real2D(rand(Uniform(0, width)),rand(Uniform(0, height)))
     setObjectLocation!(field, agent, newpos)

@@ -98,5 +98,3 @@ setObjectLocation!(f4,Patch(nothing),Real2D(2.9,4.5))
 setObjectLocation!(f4,Patch(nothing),Real2D(2.9,8.0))
 
 @test length(getNeighborsWithinDistance(f4,  Real2D(0.1,5.0) , __distance)) == 2
-
-@test length(getNeighborsWithinDistance(f4,  Real2D(0.1,5.0) , 5.0)) == 9
