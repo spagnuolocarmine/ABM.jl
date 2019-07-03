@@ -11,6 +11,12 @@ neighborhood_distance = 0
 
 global field = Field2D(width,height,neighborhood_distance/1.5,true)
 
+global const HOME = 1
+global const FOOD =2
+
+setObjectLocation!(field, Agent(nothing, nothing), pos)
+
+
 addfield!(simstate,field)
 
 function depositPheromone(state::SimState)
@@ -19,6 +25,8 @@ function depositPheromone(state::SimState)
     else
         #body
     end
+
+    reward = 0.0
 end
 
 function act()
@@ -47,7 +55,7 @@ for i in 1:10000
     ant = Agent(fstep,a)
     setObjectLocation!(field, ant, pos)
     #if i == 1
-        scheduleRepeating!(myschedule,boid)
+        scheduleRepeating!(myschedule,ant)
     #end
 end
 
