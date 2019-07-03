@@ -24,6 +24,9 @@ global const FOOD_Y = 135.0
 pointhome = Real2D(HOME_X, HOME_Y)
 pointfood = Real2D(FOOD_X, FOOD_Y)
 
+#MATRICES
+tofoodgrid = zeros(height, width)
+tohomegrid = zeros(height, width)
 
 
 addfield!(simstate,field)
@@ -32,11 +35,12 @@ function depositPheromone(state::SimState, agent::Agent)
 
     location :: Real2D = getObjectLocation(field, agent)
 
+
     x = location.x
     y = location.y
 
     if hasFoodItem
-        max =
+        max = tofoodgrid[x, y]
     else
         #body
     end
