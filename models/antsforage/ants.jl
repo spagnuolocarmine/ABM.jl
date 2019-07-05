@@ -20,9 +20,15 @@ global const HOME_Y = 15.0
 global const FOOD_X = 135.0
 global const FOOD_Y = 135.0
 
+#values PHEROMONE
+global const IMPOSSIBLY_BAD_PHEROMONE = -1
+global const LIKELY_MAX_PHEROMONE = 3
+
 #POINT HOME AND FOOD
 pointHome = Real2D(HOME_X, HOME_Y)
 pointFood = Real2D(FOOD_X, FOOD_Y)
+
+Real2D last
 
 #MATRICES
 toFoodGrid = zeros(height, width)
@@ -36,7 +42,6 @@ addfield!(simstate,field)
 function depositPheromone(state::SimState, agent::Agent)
 
     location :: Real2D = getObjectLocation(field, agent)
-
 
     x = location.x
     y = location.y
@@ -90,8 +95,45 @@ function depositPheromone(state::SimState, agent::Agent)
     reward = 0.0
 end
 
-function act()
-    #body
+function act(state::SimState)
+    location :: Real2D = getObjectLocation(field, agent)
+
+    x = location.x
+    y = location.y
+
+    if hasFoodItem
+        max = IMPOSSIBLY_BAD_PHEROMONE
+        max_x = x
+        max_y = y
+        count = 2
+
+        for dx = -1:1
+            for dy = -1:1
+                _x = dx + x
+                _y = dy + y
+
+                if (dx == 0 & dy == 0) ||
+                        _x < 0 || _y < 0 ||
+                        _x >= width || _y >= height
+                    continue
+                end
+                m = toHomeGrid[_x, _y]
+                if m > max
+                    count = 2
+                end
+                if m > max || (m == max && state)   #RISOLVERE RANDOM
+                    max = m
+                    max_x = _x
+                    max_y = _y
+                end
+            end
+        end
+        if max == 0 && last != nothing
+            if #RANDOM
+
+            end
+        end
+    end
 end
 
 
