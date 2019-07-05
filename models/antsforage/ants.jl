@@ -21,13 +21,15 @@ global const FOOD_X = 135.0
 global const FOOD_Y = 135.0
 
 #POINT HOME AND FOOD
-pointhome = Real2D(HOME_X, HOME_Y)
-pointfood = Real2D(FOOD_X, FOOD_Y)
+pointHome = Real2D(HOME_X, HOME_Y)
+pointFood = Real2D(FOOD_X, FOOD_Y)
 
 #MATRICES
-tofoodgrid = zeros(height, width)
-tohomegrid = zeros(height, width)
+toFoodGrid = zeros(height, width)
+toHomeGrid = zeros(height, width)
 
+updateCutDown = 0.9
+diagonalCutDown = updateCutDown^√2
 
 addfield!(simstate,field)
 
@@ -41,8 +43,48 @@ function depositPheromone(state::SimState, agent::Agent)
 
     if hasFoodItem
         max = tofoodgrid[x, y]
+        for dx = -1:1
+            for dy = -1:1
+                _x = dx + x
+                _y = dy + y
+
+                if _x < 0 || _y < 0 || _x >= width || _y >= height
+                    continue
+                end
+
+                m = toFoodGrid[_x, _y]
+                    *(dx * dy != 0 ?         #diagonal corners
+                    diagonalCutDown : updateCutDown) +
+                    reward
+
+                if m > max
+                    max = m
+                end
+            end
+        end
+        toFoodGrid[x, y] = max
     else
-        #body
+        max = toHomeGrid[x, y]
+        for dx = -1:1
+            for dy = -1:1
+                _x = dx + x
+                _y = dy + y
+
+                if _x < 0 || _y < 0 || _x >= width || _y >= height
+                    continue
+                end
+
+                m = toHomeGrid[_x, _y]
+                    *(dx * dy != 0 ?         #diagonal corners
+                    diagonalCutDown : updateCutDown) +
+                    reward
+
+                if m > max
+                    max = m
+                end
+            end
+        end
+        toHomeGrid[x, y] = max
     end
 
     reward = 0.0
