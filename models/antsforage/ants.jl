@@ -97,10 +97,32 @@ function act(state::SimState)
                 end
             end
         end
-        if max == 0 && last != nothing
+        if max == 0 && last != nothing              #nowhere to go!
             if #RANDOM
+                xm = x + (x - last.x)
+                ym = y + (y - last.y)
 
+                if xm >= 0 && xm < width && ym >= 0 && < height     #aggiungere ostacoli in futuro
+                    max_x = xm
+                    max_y = ym
+                end
+            elseif #RANDOM
+                xd = (#random(3)-1)
+                yd = (#random(3)-1)
+                xm = x + xd
+                ym = y + yd
+
+                if !(xd == 0 && yd == 0) && xm >= 0 && xm <= width && ym >= 0 && ym < height
+                    max_x = xm;
+                    max_y = ym;
+                end
             end
+            setObjectLocation!(field, agent, Real2D(max_x, max_y))
+
+            if condition
+                body
+            end
+
         end
     end
 end
