@@ -4,9 +4,7 @@ using Distributions
 using BenchmarkTools
 
 
-Real2D last
-
-
+lastPos = nothing
 
 function depositPheromone(state::SimState, agent::Agent)
 
@@ -64,7 +62,7 @@ function depositPheromone(state::SimState, agent::Agent)
     reward = 0.0
 end
 
-function act(state::SimState)
+function act(state::SimState, agent::Agent)
     location :: Real2D = getObjectLocation(field, agent)
 
     x = location.x
@@ -97,40 +95,94 @@ function act(state::SimState)
                 end
             end
         end
-        if max == 0 && last != nothing              #nowhere to go!
+        if max == 0 && lastPos != nothing              #nowhere to go!
             if #RANDOM
-                xm = x + (x - last.x)
-                ym = y + (y - last.y)
+                xm = x + (x - lastPos.x)
+                ym = y + (y - lastPos.y)
 
                 if xm >= 0 && xm < width && ym >= 0 && < height     #aggiungere ostacoli in futuro
                     max_x = xm
                     max_y = ym
                 end
-            elseif #RANDOM
-                xd = (#random(3)-1)
-                yd = (#random(3)-1)
-                xm = x + xd
-                ym = y + yd
+            end
 
-                if !(xd == 0 && yd == 0) && xm >= 0 && xm <= width && ym >= 0 && ym < height
-                    max_x = xm;
-                    max_y = ym;
+        elseif #RANDOM
+            xd = (#random(3)-1)
+            yd = (#random(3)-1)
+            xm = x + xd
+            ym = y + yd
+
+            if !(xd == 0 && yd == 0) && xm >= 0 && xm <= width && ym >= 0 && ym < height
+                max_x = xm;
+                max_y = ym;
+            end
+        end
+        setObjectLocation!(field, agent, Real2D(max_x, max_y))
+
+        if condition        #TODO manca if
+            body
+        end
+    else
+        max = IMPOSSIBLY_BAD_PHEROMONE
+        max_x = x
+        max_y = y
+        count = 2
+
+        for dx = -1:1
+            for dy = -1:1
+                _x = dx + x
+                _y = dy + y
+
+                if (dx == 0 & dy == 0) ||
+                        _x < 0 || _y < 0 ||
+                        _x >= width || _y >= height
+                    continue
+                end
+                m = toFoodGrid[_x, _y]
+                if m > max
+                    count = 2
+                end
+                if m > max || (m == max && state)   #RISOLVERE RANDOM
+                    max = m
+                    max_x = _x
+                    max_y = _y
                 end
             end
-            setObjectLocation!(field, agent, Real2D(max_x, max_y))
+        end
+        if max == 0 && lastPos != nothing              #nowhere to go!
+            if #RANDOM
+                xm = x + (x - lastPos.x)
+                ym = y + (y - lastPos.y)
 
-            if condition
-                body
+                if xm >= 0 && xm < width && ym >= 0 && < height     #aggiungere ostacoli in futuro
+                    max_x = xm
+                    max_y = ym
+                end
             end
 
+        elseif #RANDOM
+            xd = (#random(3)-1)
+            yd = (#random(3)-1)
+            xm = x + xd
+            ym = y + yd
+            if !(xd == 0 && yd == 0) && xm >= 0 && xm <= width && ym >= 0 && ym < height
+                max_x = xm;
+                max_y = ym;
+            end
+        end
+        setObjectLocation!(field, agent, Real2D(max_x, max_y))
+
+        if condition        #TODO manca if
+            body
         end
     end
+    lastPos = location
 end
 
 
 function fstep(state::SimState, agent::Agent)
     depositPheromone(state, agent)
-    act(state)
+    act(state, agent)
 end
 
 
