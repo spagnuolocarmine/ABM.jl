@@ -42,6 +42,10 @@ afReward = 1.0
 updateCutDown = 0.9
 diagonalCutDown = updateCutDown^√2
 
+#PROBABILITY
+momentumProbability = 0.8
+randomActionProbability = 0.1
+
 addfield!(simstate,field)
 
 pos = Real2D(HOME_X, HOME_Y)

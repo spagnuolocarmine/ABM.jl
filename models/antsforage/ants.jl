@@ -120,7 +120,8 @@ function act(state::SimState, agent::Agent)
         setObjectLocation!(field, agent, Real2D(max_x, max_y))
 
         if condition        #TODO manca if
-            body
+            reward = afReward
+            hasFoodItem = !hasFoodItem
         end
     else
         max = IMPOSSIBLY_BAD_PHEROMONE
@@ -173,7 +174,8 @@ function act(state::SimState, agent::Agent)
         setObjectLocation!(field, agent, Real2D(max_x, max_y))
 
         if condition        #TODO manca if
-            body
+            reward = afReward
+            hasFoodItem = !hasFoodItem
         end
     end
     lastPos = location
