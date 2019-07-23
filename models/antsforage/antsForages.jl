@@ -3,14 +3,16 @@ using Revise
 using Distributions
 using BenchmarkTools
 using Base
+include("ants.jl")
+
 
 simstate = SimState()
 myschedule = Schedule(simstate)
 width = 150
 height = 150
-neighborhood_distance = 0
+neighborhood_distance = 0.1
 
-global field = Field2D(width,height,neighborhood_distance/1.5,true)
+global field = Field2D(width,height,neighborhood_distance/1.5,false)
 
 #coordinates HOME
 global const HOME_X = 15.0
@@ -25,16 +27,22 @@ global const IMPOSSIBLY_BAD_PHEROMONE = -1
 global const LIKELY_MAX_PHEROMONE = 3
 
 #POINT HOME AND FOOD
-pointHome = Real2D(HOME_X, HOME_Y)
-pointFood = Real2D(FOOD_X, FOOD_Y)
+posHome = Real2D(HOME_X, HOME_Y)
+posFood = Real2D(FOOD_X, FOOD_Y)
 
 #MATRICES
-toFoodGrid = zeros(Float64, height, width)
-toHomeGrid = zeros(Float64, height, width)
+toFoodGrid = zeros(Int64, height, width)
+toHomeGrid = zeros(Int64, height, width)
 
 #values SITES
 global const HOME = 1
 global const FOOD = 2
+
+patchHome = Patch(HOME)
+patchFood = Patch(FOOD)
+
+setObjectLocation!(field, patchHome, posHome)
+setObjectLocation!(field, patchFood, posFood)
 
 numAnts = 10000
 evaporationConstant = 0.999

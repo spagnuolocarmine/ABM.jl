@@ -2,18 +2,16 @@ using ABM
 using Revise
 using Distributions
 using BenchmarkTools
-
-
-lastPos = nothing
+using Parameters
 
 function depositPheromone(state::SimState, agent::Agent)
 
     location :: Real2D = getObjectLocation(field, agent)
 
-    x = location.x
-    y = location.y
+    x::Int8 = location.x
+    y::Int8 = location.y
 
-    if hasFoodItem
+    if agent.state.hasFoodItem
         max = tofoodgrid[x, y]
         for dx = -1:1
             for dy = -1:1
@@ -49,7 +47,7 @@ function depositPheromone(state::SimState, agent::Agent)
                 m = toHomeGrid[_x, _y]
                     *(dx * dy != 0 ?         #diagonal corners
                     diagonalCutDown : updateCutDown) +
-                    reward
+                    agent.state.reward
 
                 if m > max
                     max = m
@@ -63,12 +61,12 @@ function depositPheromone(state::SimState, agent::Agent)
 end
 
 function act(state::SimState, agent::Agent)
-    location :: Real2D = getObjectLocation(field, agent)
+    location = getObjectLocation(field, agent)
 
     x = location.x
     y = location.y
 
-    if hasFoodItem
+    if agent.state.hasFoodItem
         max = IMPOSSIBLY_BAD_PHEROMONE
         max_x = x
         max_y = y
@@ -88,7 +86,7 @@ function act(state::SimState, agent::Agent)
                 if m > max
                     count = 2
                 end
-                if m > max || (m == max && state)   #RISOLVERE RANDOM
+                if m > max || (m == max && rand(Bool))   #TODO RISOLVERE RANDOM (rand(Bool) è provvisorio)
                     max = m
                     max_x = _x
                     max_y = _y
@@ -96,19 +94,19 @@ function act(state::SimState, agent::Agent)
             end
         end
         if max == 0 && lastPos != nothing              #nowhere to go!
-            if #RANDOM
+            if rand(Bool)           #TODO SRISOLVERE RANDOM (rand(Bool) è provvisorio)
                 xm = x + (x - lastPos.x)
                 ym = y + (y - lastPos.y)
 
-                if xm >= 0 && xm < width && ym >= 0 && < height     #aggiungere ostacoli in futuro
+                if xm >= 0 && xm < width && ym >= 0 && ym < height     #aggiungere ostacoli in futuro
                     max_x = xm
                     max_y = ym
                 end
             end
 
-        elseif #RANDOM
-            xd = (#random(3)-1)
-            yd = (#random(3)-1)
+        elseif rand(Bool)                          #TODO RISOLVERE RANDOM (rand(Bool) è provvisorio)
+            xd = rand(-1:1)
+            yd = rand(-1:1)
             xm = x + xd
             ym = y + yd
 
@@ -119,7 +117,7 @@ function act(state::SimState, agent::Agent)
         end
         setObjectLocation!(field, agent, Real2D(max_x, max_y))
 
-        if condition        #TODO manca if
+        if getObjectsAtLocation(field, Real2D(max_x, max_y)) == HOME        #TODO manca if
             reward = afReward
             hasFoodItem = !hasFoodItem
         end
@@ -131,8 +129,8 @@ function act(state::SimState, agent::Agent)
 
         for dx = -1:1
             for dy = -1:1
-                _x = dx + x
-                _y = dy + y
+                _x::Int8 = dx + x
+                _y::Int8 = dy + y
 
                 if (dx == 0 & dy == 0) ||
                         _x < 0 || _y < 0 ||
@@ -143,27 +141,27 @@ function act(state::SimState, agent::Agent)
                 if m > max
                     count = 2
                 end
-                if m > max || (m == max && state)   #RISOLVERE RANDOM
+                if m > max || (m == max && rand(Bool))           #TODO SRISOLVERE RANDOM (rand(Bool) è provvisorio)
                     max = m
                     max_x = _x
                     max_y = _y
                 end
             end
         end
-        if max == 0 && lastPos != nothing              #nowhere to go!
-            if #RANDOM
+        if max == 0 && agent.state.lastPos != nothing              #nowhere to go!
+            if rand(Bool)           #TODO SRISOLVERE RANDOM (rand(Bool) è provvisorio)
                 xm = x + (x - lastPos.x)
                 ym = y + (y - lastPos.y)
 
-                if xm >= 0 && xm < width && ym >= 0 && < height     #aggiungere ostacoli in futuro
+                if xm >= 0 && xm < width && ym >= 0 && ym < height     #aggiungere ostacoli in futuro
                     max_x = xm
                     max_y = ym
                 end
             end
 
-        elseif #RANDOM
-            xd = (#random(3)-1)
-            yd = (#random(3)-1)
+        elseif rand(Bool)           #TODO SRISOLVERE RANDOM (rand(Bool) è provvisorio)
+            xd = rand(-1:1)
+            yd = rand(-1:1)
             xm = x + xd
             ym = y + yd
             if !(xd == 0 && yd == 0) && xm >= 0 && xm <= width && ym >= 0 && ym < height
@@ -173,7 +171,7 @@ function act(state::SimState, agent::Agent)
         end
         setObjectLocation!(field, agent, Real2D(max_x, max_y))
 
-        if condition        #TODO manca if
+        if getObjectsAtLocation(field, Real2D(max_x, max_y)) == FOOD       #TODO manca if
             reward = afReward
             hasFoodItem = !hasFoodItem
         end
@@ -183,8 +181,8 @@ end
 
 
 function fstep(state::SimState, agent::Agent)
-    depositPheromone(state, agent)
-    act(state, agent)
+    depositPheromone(state::SimState, agent::Agent)
+    act(state::SimState, agent::Agent)
 end
 
 
@@ -193,6 +191,8 @@ mutable struct AntData
     pos::Real2D
     reward::Float64
     hasFoodItem::Bool
+    lastPos::Real2D = nothing
+    AntData(name, pos, reward, hasFoodItem) = new(name, pos, reward, hasFoodItem)
 
 end
 
