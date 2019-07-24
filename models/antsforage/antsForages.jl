@@ -6,14 +6,34 @@ using Base
 using Parameters
 include("ants.jl")
 
+@with_kw mutable struct AntsForageData
+    HOME::Int8 = 1
+    FOOD::Int8 = 2
+    updateCutDown::Float64 = 0.9
+    diagonalCutDown::Float64 = updateCutDown^√2
+    evaporationConstant::Float64 = 0.999
+    momentumProbability::Float64 = 0.8
+    randomActionProbability::Float64 = 0.1
+    afReward::Float64 = 1.0
+
+    IMPOSSIBLY_BAD_PHEROMONE::Int8 = -1
+    LIKELY_MAX_PHEROMONE::Int8 = 3
+
+    toFoodGrid = zeros(Int64, convert(Int, height), convert(Int, width))
+    toHomeGrid = zeros(Int64, convert(Int, height), convert(Int, width))
+
+end
+
 
 simstate = SimState()
 myschedule = Schedule(simstate)
-width = 150
-height = 150
-neighborhood_distance = 10
+width = 150.0
+height = 150.0
+neighborhood_distance = 10.0
 
 global field = Field2D(width,height,neighborhood_distance/1.5,false)
+
+global afd = AntsForageData()
 
 #coordinates HOME
 global const HOME_X = 15.0
@@ -39,8 +59,8 @@ posFood = Real2D(FOOD_X, FOOD_Y)
 """global const HOME = 1
 global const FOOD = 2"""
 
-patchHome = Patch(HOME)
-patchFood = Patch(FOOD)
+patchHome = Patch(afd.HOME)
+patchFood = Patch(afd.FOOD)
 
 setObjectLocation!(field, patchHome, posHome)
 setObjectLocation!(field, patchFood, posFood)
@@ -51,7 +71,7 @@ afReward = 1.0
 updateCutDown = 0.9
 diagonalCutDown = updateCutDown^√2"""
 
-#PROBABILITY
+#PROBABILITYS
 """momentumProbability = 0.8
 randomActionProbability = 0.1"""
 
@@ -68,21 +88,3 @@ for i in 1:numAnts
 end
 
 @time  simulate!(myschedule,10);
-
-@with_kw struct AntsForageData
-    HOME::Int8 = 1
-    FOOD::Int8 = 2
-    updateCutDown::Float64 = 0.9
-    diagonalCutDown::Float64 = updateCutDown^√2
-    evaporationConstant::Float64 = 0.999
-    momentumProbability::Float64 = 0.8
-    randomActionProbability::Float64 = 0.1
-    afReward::Float64 = 1.0
-
-    IMPOSSIBLY_BAD_PHEROMONE::Int8 = -1
-    LIKELY_MAX_PHEROMONE::Int8 = 3
-
-    toFoodGrid = zeros(Int64, height, width)
-    toHomeGrid = zeros(Int64, height, width)
-
-end

@@ -4,7 +4,7 @@ using Distributions
 using BenchmarkTools
 using Parameters
 
-function depositPheromone(state::SimState, agent::Agent, afd::AntsForageData)
+function depositPheromone(state::SimState, agent::Agent)
 
     currentfield = state.fields[length(state.fields)]
     location :: Real2D = getObjectLocation(currentfield, agent)
@@ -61,7 +61,7 @@ function depositPheromone(state::SimState, agent::Agent, afd::AntsForageData)
     agent.state.reward = 0.0
 end
 
-function act(state::SimState, agent::Agent, afd::AntsForageData)
+function act(state::SimState, agent::Agent)
 
     currentfield = state.fields[length(state.fields)]
     location :: Real2D = getObjectLocation(currentfield, agent)
@@ -128,7 +128,7 @@ function act(state::SimState, agent::Agent, afd::AntsForageData)
                 agent.state.hasFoodItem = !agent.state.hasFoodItem
             end
         end
-        
+
     else
         max = afd.IMPOSSIBLY_BAD_PHEROMONE
         max_x = x
@@ -192,13 +192,15 @@ function act(state::SimState, agent::Agent, afd::AntsForageData)
 end
 
 
-function fstep(state::SimState, agent::Agent, afd::AntsForageData)
+function fstep(state::SimState, agent::Agent)
 
-    afd.toFoodGrid *= evaporationConstant
-    afd.toHomeGrid *= evaporationConstant
+    #afd = AntsForageData()
 
-    depositPheromone(state::SimState, agent::Agent, afd::AntsForageData)
-    act(state::SimState, agent::Agent, afd::AntsForageData)
+    afd.toFoodGrid *= afd.evaporationConstant
+    afd.toHomeGrid *= afd.evaporationConstant
+
+    depositPheromone(state::SimState, agent::Agent)
+    act(state::SimState, agent::Agent)
 end
 
 
