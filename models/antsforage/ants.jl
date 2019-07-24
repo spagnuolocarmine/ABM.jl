@@ -9,8 +9,8 @@ function depositPheromone(state::SimState, agent::Agent)
     currentfield = state.fields[length(state.fields)]
     location :: Real2D = getObjectLocation(currentfield, agent)
 
-    x::Int8 = location.x
-    y::Int8 = location.y
+    x::Int64 = location.x
+    y::Int64 = location.y
 
     if agent.state.hasFoodItem
         max = afd.tofoodgrid[x, y]
@@ -137,8 +137,8 @@ function act(state::SimState, agent::Agent)
 
         for dx = -1:1
             for dy = -1:1
-                _x::Int8 = dx + x
-                _y::Int8 = dy + y
+                _x::Int64 = dx + x
+                _y::Int64 = dy + y
 
                 if (dx == 0 & dy == 0) ||
                         _x < 0 || _y < 0 ||

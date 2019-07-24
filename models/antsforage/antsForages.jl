@@ -6,42 +6,44 @@ using Base
 using Parameters
 include("ants.jl")
 
-@with_kw mutable struct AntsForageData
-    HOME::Int8 = 1
-    FOOD::Int8 = 2
-    updateCutDown::Float64 = 0.9
-    diagonalCutDown::Float64 = updateCutDown^√2
-    evaporationConstant::Float64 = 0.999
-    momentumProbability::Float64 = 0.8
-    randomActionProbability::Float64 = 0.1
-    afReward::Float64 = 1.0
+mutable struct AntsForageData
+    HOME::Int8
+    FOOD::Int8
+    updateCutDown::Float64
+    diagonalCutDown::Float64
+    evaporationConstant::Float64
+    momentumProbability::Float64
+    randomActionProbability::Float64
+    afReward::Float64
 
-    IMPOSSIBLY_BAD_PHEROMONE::Int8 = -1
-    LIKELY_MAX_PHEROMONE::Int8 = 3
+    IMPOSSIBLY_BAD_PHEROMONE::Int8
+    LIKELY_MAX_PHEROMONE::Int8
 
-    toFoodGrid = zeros(Int64, convert(Int, height), convert(Int, width))
-    toHomeGrid = zeros(Int64, convert(Int, height), convert(Int, width))
+    toFoodGrid
+    toHomeGrid
+
+    AntsForageData() = new(1, 2, 0.9, 0.9^√2, 0.999, 0.8, 0.1, 1.0, -1, 3, zeros(Int64, convert(Int, height), convert(Int, width)), zeros(Int64, convert(Int, height), convert(Int, width)))
 
 end
 
 
 simstate = SimState()
 myschedule = Schedule(simstate)
-width = 150.0
-height = 150.0
-neighborhood_distance = 10.0
+width = 150
+height = 150
+neighborhood_distance = 10
 
 global field = Field2D(width,height,neighborhood_distance/1.5,false)
 
 global afd = AntsForageData()
 
 #coordinates HOME
-global const HOME_X = 15.0
-global const HOME_Y = 15.0
+global const HOME_X = 15
+global const HOME_Y = 15
 
 #coordinates FOOD
-global const FOOD_X = width - 15.0
-global const FOOD_Y = height - 15.0
+global const FOOD_X = width - 15
+global const FOOD_Y = height - 15
 
 #values PHEROMONE
 """global const IMPOSSIBLY_BAD_PHEROMONE = -1
