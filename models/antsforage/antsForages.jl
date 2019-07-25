@@ -4,6 +4,7 @@ using Distributions
 using BenchmarkTools
 using Base
 using Parameters
+using Plots
 include("ants.jl")
 
 mutable struct AntsForageData
@@ -82,11 +83,29 @@ addfield!(simstate,field)
 pos = Real2D(HOME_X, HOME_Y)
 initialReward = 0.0
 
+
+
+    gr(show = true) # in IJulia this would be: gr(show = :ijulia)       ROBA GRAFICA
+
+
+
 for i in 1:numAnts
     a = AntData("Ant", pos, initialReward, false, posHome)
     ant = Agent(fstep,a)
     setObjectLocation!(field, ant, pos)
     scheduleRepeating!(myschedule,ant)
+
+
+
+        getAllObjects(field)
+
+        x = 1; y = 10;
+
+        display(plot(x,y))
+
+
 end
+
+
 
 @time  simulate!(myschedule,10);
