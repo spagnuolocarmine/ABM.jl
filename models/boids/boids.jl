@@ -2,40 +2,36 @@ using ABM
 using Revise
 using Distributions
 using BenchmarkTools
+include("boid.jl")
+
+mutable struct BoidsData
+    cohesion::Float64
+    avoidance::Float64
+    randomness::Float64
+    consistency::Float64
+    momentum::Float64
+    deadFlockerProbability::Float64
+    neighborhood_distance:: Float64
+    jump::Float64
+
+    BoidsData() = new(1.0, 1.0, 1.0, 1.0, 1.0,0.1, 10, 0.7)
+end
 
 simstate = SimState()
 myschedule = Schedule(simstate)
 width = 150.0
 height = 150.0
-neighborhood_distance = 10.0
-jump = 0.7
 
 global field = Field2D(width,height,neighborhood_distance/1.5,true)
+global boids = BoidsData()
 
-addfield!(simstate,field)
 
-function fstep(state::SimState, agent::Agent)
-    mypos = agent.state.pos #getObjectLocation(field, agent)
-    #@time
-   neighborhood = getNeighborsWithinDistance(field, mypos, neighborhood_distance)
-  # println("n: ",length(neighborhood))
-    #for neighboring in neighborhood
-    #    println(agent.state.name," ",agent.id," ",neighboring.id)
-    #end
-    agent.state.orientation = mypos
-    newpos =  Real2D(rand(Uniform(0, width)),rand(Uniform(0, height)))
-    setObjectLocation!(field, agent, newpos)
-end
+numBoids = 10000
 
-mutable struct BoidData
-    name::String
-    pos::Real2D
-    orientation::Real2D
-end
-
-for i in 1:10000
+for i in 1:numBoids
     pos = Real2D(rand(Uniform(0, width)), rand(Uniform(0, height)))
-    d = BoidData("Boid", pos, Real2D(rand(Uniform(0, width)),rand(Uniform(0, height))))
+    d = BoidData(pos)
+    #CONTROLLO PER VEDERE SE L'UCCELLO E' MORTO
     boid = Agent(fstep,d)
     setObjectLocation!(field, boid, pos)
     #if i == 1

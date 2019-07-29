@@ -85,7 +85,7 @@ initialReward = 0.0
 
 
 
-    gr(show = true) # in IJulia this would be: gr(show = :ijulia)       ROBA GRAFICA
+    #gr(show = true) # in IJulia this would be: gr(show = :ijulia)       ROBA GRAFICA
 
 
 
@@ -97,11 +97,11 @@ for i in 1:numAnts
 
 
 
-        getAllObjects(field)
+        #v = getAllObjects(field)
 
-        x = 1; y = 10;
+        #x = 1; y = 10;
 
-        display(plot(x,y))
+        #display(plot(x,y))
 
 
 end
