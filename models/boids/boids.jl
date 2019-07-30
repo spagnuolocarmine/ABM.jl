@@ -11,7 +11,7 @@ mutable struct BoidsData
     consistency::Float64
     momentum::Float64
     deadFlockerProbability::Float64
-    neighborhood_distance:: Float64
+    neighborhood_distance:: Real
     jump::Float64
 
     BoidsData() = new(1.0, 1.0, 1.0, 1.0, 1.0,0.1, 10, 0.7)
@@ -22,9 +22,11 @@ myschedule = Schedule(simstate)
 width = 150.0
 height = 150.0
 
-global field = Field2D(width,height,neighborhood_distance/1.5,true)
 global boids = BoidsData()
+global field = Field2D(width,height,boids.neighborhood_distance/1.5,true)
 
+
+addfield!(simstate,field)
 
 numBoids = 10000
 
