@@ -2,6 +2,7 @@ using ABM
 using Revise
 using Distributions
 using BenchmarkTools
+using Base
 include("boid.jl")
 
 mutable struct BoidsData

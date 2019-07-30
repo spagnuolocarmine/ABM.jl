@@ -2,7 +2,6 @@ using ABM
 using Revise
 using Distributions
 using BenchmarkTools
-using Parameters
 
 mutable struct BoidData
     pos::Real2D
@@ -154,5 +153,5 @@ function fstep(state::SimState, agent::Agent)
 
     thisBoid.lastPos = Real2D(dx, dy)
     thisBoid.pos = Real2D(tTransform(thisBoid.pos.x + dx, field.width), tTransform(thisBoid.pos.y + dy, field.height))                          #TODO COMPLETARE
-    setObjectLocation(ffield, thisBoid, thisBoid.pos)
+    setObjectLocation(field, thisBoid, thisBoid.pos)
 end
