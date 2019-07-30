@@ -34,7 +34,11 @@ numBoids = 10000
 for i in 1:numBoids
     pos = Real2D(rand(Uniform(0, width)), rand(Uniform(0, height)))
     d = BoidData(pos)
-    #CONTROLLO PER VEDERE SE L'UCCELLO E' MORTO
+
+    if rand(Bool)
+        d.isDead = true
+    end
+
     boid = Agent(fstep,d)
     setObjectLocation!(field, boid, pos)
     #if i == 1
