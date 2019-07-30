@@ -3,8 +3,6 @@ using Revise
 using Distributions
 using BenchmarkTools
 using Base
-using Parameters
-using Plots
 include("ants.jl")
 
 mutable struct AntsForageData

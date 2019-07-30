@@ -29,7 +29,7 @@ export Real2D,
 export Location
 export Field
 export Field2D,
-        setObjectLocation!,
+        setObjectLocation!, tTransform,
         getObjectLocation, getObjectsAtLocation, getNeighborsWithinDistance, getAllObjects,
         numObjectsAtLocation,
         remove!, clean!
