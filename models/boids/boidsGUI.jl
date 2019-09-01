@@ -5,6 +5,15 @@ using BenchmarkTools
 using Base
 include("boid.jl")
 
+using Pkg
+Pkg.add("Plots")
+using Plots
+Pkg.add("PyPlot") # Install a different backend
+pyplot() # Switch to using the PyPlot.jl backend
+
+
+
+
 mutable struct BoidsData
     cohesion::Float64
     avoidance::Float64
@@ -20,8 +29,8 @@ end
 
 simstate = SimState()
 myschedule = Schedule(simstate)
-width = 200.0
-height = 200.0
+width = 150.0
+height = 150.0
 
 global boids = BoidsData()
 global field = Field2D(width,height,boids.neighborhood_distance/1.5,true)
@@ -30,7 +39,6 @@ global field = Field2D(width,height,boids.neighborhood_distance/1.5,true)
 addfield!(simstate,field)
 
 numBoids = 100
-step = 100
 
 for i in 1:numBoids
     pos = Real2D(rand(Uniform(0, width)), rand(Uniform(0, height)))
@@ -67,12 +75,40 @@ Profile.clear()
 # println("size ",length(field.fO))
 #
 
+function simulateGraphics!(schedule::Schedule, nsteps::Int64)
+    @gif for i = 1:nsteps
+        println("[",schedule.steps,"] time: ",schedule.time)
+
+        field = schedule.simstate.fields[length(schedule.simstate.fields)]
+        points = collect(getAllObjects(field))
+        println("fino a qua ci arrivo")
+        x = []
+        println("pure qua ci arrivo")
+        y = []
+        println("sono quasi al for")
+        for j = 1:length(points)
+            push!(x, points[j].x)
+            push!(y, points[j].y)
+        end
+
+        println("sono uscito: $x e $y")
+
+        scatter!(x, y, shape = :star5, color = :black,
+     markersize = 10)
+
+        println("ho anche stampato jee")
+
+        step!(schedule)
+
+        println("step complet")
+    end every 1
+end
 
 
-output1 = @timed  simulate!(myschedule,step);
-time1 = output1[2];
+@time  simulateGraphics!(myschedule,10);
 
-println("time: $time1, step/s: $(step/time1)");
+
+
 
 
 
