@@ -29,8 +29,8 @@ end
 
 simstate = SimState()
 myschedule = Schedule(simstate)
-width = 1000.0
-height = 1000.0
+width = 200.0
+height = 200.0
 
 global boids = BoidsData()
 global field = Field2D(width,height,boids.neighborhood_distance/1.5,true)
@@ -38,7 +38,7 @@ global field = Field2D(width,height,boids.neighborhood_distance/1.5,true)
 
 addfield!(simstate,field)
 
-numBoids = 1
+numBoids = 100
 
 for i in 1:numBoids
     pos = Real2D(rand(Uniform(0, width)), rand(Uniform(0, height)))
@@ -81,31 +81,36 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
 
         field = schedule.simstate.fields[length(schedule.simstate.fields)]
         points = collect(getAllObjects(field))
-        println("fino a qua ci arrivo")
+        #println("fino a qua ci arrivo")
         x = []
-        println("pure qua ci arrivo")
+        #println("pure qua ci arrivo")
         y = []
-        println("sono quasi al for")
+        #println("sono quasi al for")
         for j = 1:length(points)
             push!(x, points[j].x)
             push!(y, points[j].y)
         end
 
-        println("sono uscito: $x e $y")
+        for k = 1:length(x)
+            println("sono uscito: $(x[k]) e $(y[k])")
+        end
 
-        scatter!(x, y, shape = :star5, color = :black,
-     size=(200, 200))
 
-        println("ho anche stampato")
+        scatter(x, y, shape = :star5, color = :black,
+         xlims = (0, width), ylim = (0, height), size = (800, 800))
+
+         gui()
+
+        #println("ho anche stampato")
 
         step!(schedule)
 
-        println("step complet")
+        #println("step complet")
     end
 end
 
 
-@time  simulateGraphics!(myschedule,10);
+@time  simulateGraphics!(myschedule,100);
 
 
 
