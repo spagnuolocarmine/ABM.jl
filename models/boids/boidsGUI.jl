@@ -33,7 +33,7 @@ width = 200.0
 height = 200.0
 
 global boids = BoidsData()
-global field = Field2D(width,height,boids.neighborhood_distance/1.5,true)
+global field = Field2D(width,height,boids.neighborhood_distance/10,true)
 
 
 addfield!(simstate,field)
@@ -96,7 +96,7 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
         end
 
 
-        scatter(x, y, shape = :star5, color = :black,
+        scatter(x, y, shape = :rtriangle, color = :black,
          xlims = (0, width), ylim = (0, height), size = (800, 800))
 
          gui()
