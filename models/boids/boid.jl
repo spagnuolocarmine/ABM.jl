@@ -100,8 +100,27 @@ function avoidance(neighbors, field::Field2D, thisBoid:: BoidData)
         otherBoid = neighbors[i].state
 
         if otherBoid != thisBoid
-            dx = abs(thisBoid.pos.x - otherBoid.pos.x)      #TODO MANCA TOROIDAL
-            dy = abs(thisBoid.pos.y - otherBoid.pos.y)
+            if abs(thisBoid.pos.x - otherBoid.pos.x) <= field.width/2      #TODO MANCA TOROIDAL
+                dx = thisBoid.pos.x - otherBoid.pos.x
+            else
+                dx = tTransform(thisBoid.pos.x, field.width) - tTransform(otherBoid.pos.x, field.width)
+                if dx * 2 > field.width
+                    dx = dx - field.width
+                elseif dx * 2 < -field.width
+                    dx = dx + field.width
+                end
+            end
+
+            if abs(thisBoid.pos.y - otherBoid.pos.y) <= field.height/2      #TODO MANCA TOROIDAL
+                dy = thisBoid.pos.y - otherBoid.pos.y
+            else
+                dy = tTransform(thisBoid.pos.y, field.height) - tTransform(otherBoid.pos.y, field.height)
+                if dy * 2 > field.height
+                    dy = dy - field.height
+                elseif dy * 2 < -field.height
+                    dy = dy + field.height
+                end
+            end
             lensquared = dx*dx+dy*dy
             count += 1
             x += dx/(lensquared*lensquared + 1)
@@ -154,5 +173,6 @@ function fstep(state::SimState, agent::Agent)
 
     thisBoid.lastPos = Real2D(dx, dy)
     thisBoid.pos = Real2D(tTransform(thisBoid.pos.x + dx, field.width), tTransform(thisBoid.pos.y + dy, field.height))                          #TODO COMPLETARE
+    println("###$thisBoid###")
     setObjectLocation!(field, agent, thisBoid.pos)
 end

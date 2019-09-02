@@ -29,8 +29,8 @@ end
 
 simstate = SimState()
 myschedule = Schedule(simstate)
-width = 150.0
-height = 150.0
+width = 1000.0
+height = 1000.0
 
 global boids = BoidsData()
 global field = Field2D(width,height,boids.neighborhood_distance/1.5,true)
@@ -38,13 +38,13 @@ global field = Field2D(width,height,boids.neighborhood_distance/1.5,true)
 
 addfield!(simstate,field)
 
-numBoids = 100
+numBoids = 1
 
 for i in 1:numBoids
     pos = Real2D(rand(Uniform(0, width)), rand(Uniform(0, height)))
     d = BoidData(pos)
 
-    if rand(Bool)
+    if rand() <= boids.deadFlockerProbability
         d.isDead = true
     end
 
@@ -76,7 +76,7 @@ Profile.clear()
 #
 
 function simulateGraphics!(schedule::Schedule, nsteps::Int64)
-    @gif for i = 1:nsteps
+    for i = 1:nsteps
         println("[",schedule.steps,"] time: ",schedule.time)
 
         field = schedule.simstate.fields[length(schedule.simstate.fields)]
@@ -94,14 +94,14 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
         println("sono uscito: $x e $y")
 
         scatter!(x, y, shape = :star5, color = :black,
-     markersize = 10)
+     size=(200, 200))
 
-        println("ho anche stampato jee")
+        println("ho anche stampato")
 
         step!(schedule)
 
         println("step complet")
-    end every 1
+    end
 end
 
 

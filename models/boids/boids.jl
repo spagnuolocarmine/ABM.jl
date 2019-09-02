@@ -30,13 +30,13 @@ global field = Field2D(width,height,boids.neighborhood_distance/1.5,true)
 addfield!(simstate,field)
 
 numBoids = 100
-step = 100
+step = 3000
 
 for i in 1:numBoids
     pos = Real2D(rand(Uniform(0, width)), rand(Uniform(0, height)))
     d = BoidData(pos)
 
-    if rand(Bool)
+    if rand() <= boids.deadFlockerProbability
         d.isDead = true
     end
 
