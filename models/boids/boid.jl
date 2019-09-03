@@ -57,6 +57,19 @@ function consistency(neighbors, field::Field2D)
     return Real2D(x, y)
 end
 
+function toroidalDifference(arg1::Real, arg2::Real, dimension::Real)
+    if abs(arg1 - arg2) <= dimension/2
+        return arg1 - arg2
+    else
+        d = tTransform(arg1, dimension) - tTransform(arg2, dimension)
+        if d * 2 > dimension
+            return d - dimension
+        elseif d * 2 < - dimension
+            return d + dimension
+        end
+    end
+end
+
 function cohesion(neighbors, field::Field2D, thisBoid::BoidData)
     if neighbors == nothing || length(neighbors) == 0
         return Real2D(0, 0)
@@ -71,27 +84,10 @@ function cohesion(neighbors, field::Field2D, thisBoid::BoidData)
         otherBoid = neighbors[i].state
 
         if !otherBoid.isDead
-            if abs(thisBoid.pos.x - otherBoid.pos.x) <= field.width/2
-                dx = thisBoid.pos.x - otherBoid.pos.x
-            else
-                dx = tTransform(thisBoid.pos.x, field.width) - tTransform(otherBoid.pos.x, field.width)
-                if dx * 2 > field.width
-                    dx = dx - field.width
-                elseif dx * 2 < -field.width
-                    dx = dx + field.width
-                end
-            end
+            dx = toroidalDifference(thisBoid.pos.x, otherBoid.pos.x, field.width)
 
-            if abs(thisBoid.pos.y - otherBoid.pos.y) <= field.height/2
-                dy = thisBoid.pos.y - otherBoid.pos.y
-            else
-                dy = tTransform(thisBoid.pos.y, field.height) - tTransform(otherBoid.pos.y, field.height)
-                if dy * 2 > field.height
-                    dy = dy - field.height
-                elseif dy * 2 < -field.height
-                    dy = dy + field.height
-                end
-            end
+            dy = toroidalDifference(thisBoid.pos.y, otherBoid.pos.y, field.height)
+
             count += 1
             x += dx
             y += dy
@@ -119,27 +115,10 @@ function avoidance(neighbors, field::Field2D, thisBoid:: BoidData)
         otherBoid = neighbors[i].state
 
         if otherBoid != thisBoid
-            if abs(thisBoid.pos.x - otherBoid.pos.x) <= field.width/2      #TODO MANCA TOROIDAL
-                dx = thisBoid.pos.x - otherBoid.pos.x
-            else
-                dx = tTransform(thisBoid.pos.x, field.width) - tTransform(otherBoid.pos.x, field.width)
-                if dx * 2 > field.width
-                    dx = dx - field.width
-                elseif dx * 2 < -field.width
-                    dx = dx + field.width
-                end
-            end
+            dx = toroidalDifference(thisBoid.pos.x, otherBoid.pos.x, field.width)
 
-            if abs(thisBoid.pos.y - otherBoid.pos.y) <= field.height/2      #TODO MANCA TOROIDAL
-                dy = thisBoid.pos.y - otherBoid.pos.y
-            else
-                dy = tTransform(thisBoid.pos.y, field.height) - tTransform(otherBoid.pos.y, field.height)
-                if dy * 2 > field.height
-                    dy = dy - field.height
-                elseif dy * 2 < -field.height
-                    dy = dy + field.height
-                end
-            end
+            dy = toroidalDifference(thisBoid.pos.y, otherBoid.pos.y, field.height)
+
             lensquared = dx*dx+dy*dy
             count += 1
             x += dx/(lensquared*lensquared + 1)

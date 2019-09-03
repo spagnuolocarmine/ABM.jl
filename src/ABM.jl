@@ -68,7 +68,7 @@ include("schedule.jl")
 
 function simulate!(schedule::Schedule, nsteps::Int64)
     while schedule.steps < nsteps
-        println("[",schedule.steps,"] time: ",schedule.time)
+        #println("[",schedule.steps,"] time: ",schedule.time)
         step!(schedule)
 
     end

@@ -6,12 +6,12 @@ using Base
 include("boid.jl")
 
 mutable struct BoidsData
-    cohesion::Float64
-    avoidance::Float64
-    randomness::Float64
-    consistency::Float64
-    momentum::Float64
-    deadFlockerProbability::Float64
+    cohesion::Float16
+    avoidance::Float16
+    randomness::Float16
+    consistency::Float16
+    momentum::Float16
+    deadFlockerProbability::Float16
     neighborhood_distance:: Real
     jump::Float64
 
@@ -30,7 +30,7 @@ global field = Field2D(width,height,boids.neighborhood_distance/1.5,true)
 addfield!(simstate,field)
 
 numBoids = 100
-step = 5000
+step = 1000
 
 for i in 1:numBoids
     pos = Real2D(rand(Uniform(0, width)), rand(Uniform(0, height)))
@@ -73,59 +73,3 @@ output1 = @timed  simulate!(myschedule,step);
 time1 = output1[2];
 
 println("time: $time1, step/s: $(step/time1)");
-
-
-
-
-
-
-
-
-
-
-"""@time while myschedule.steps < 3
-    println("[",myschedule.steps,"] time: ",myschedule.time)
-    @time step!(myschedule)
-    #Swap the fields status to the new one A = B
-    @time for field in myschedule.simstate.fields
-        swapState!(field)
-    end
-end"""
-
-
-"""
-function consistency(neighborhood::Vector{Union{Agent,Patch}})
-    if length(neighborhood) == 0 return Real2D(0,0) end
-    x = 0
-    y = 0
-    count = 0
-    for neighboring in neighborhood
-        count++
-        x += neighboring.state.orientation.x
-        y += neighboring.state.orientation.y
-    end
-    if count > 0
-        x /= count
-        y /= count
-    end
-    return Real2D(x,y)
-end
-
-function cohesion(boid::Agent, neighborhood::Vector{Union{Agent,Patch}})
-    if length(neighborhood) == 0 return Real2D(0,0) end
-    x = 0
-    y = 0
-    count = 0
-    for neighboring in neighborhood
-        count++
-        tpos = toroidal(boid.state.pos, field.width, field.height)
-        ntpos = toroidal(neighboring.state.pos, field.width, field.height)
-        x += dx;
-                y += dy;
-    end
-    if count > 0
-        x /= count
-        y /= count
-    end
-    return Real2D(-x/10.0,-y/10.0)
-end"""

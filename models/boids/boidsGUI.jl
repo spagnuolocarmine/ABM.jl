@@ -15,12 +15,12 @@ pyplot() # Switch to using the PyPlot.jl backend
 
 
 mutable struct BoidsData
-    cohesion::Float64
-    avoidance::Float64
-    randomness::Float64
-    consistency::Float64
-    momentum::Float64
-    deadFlockerProbability::Float64
+    cohesion::Float16
+    avoidance::Float16
+    randomness::Float16
+    consistency::Float16
+    momentum::Float16
+    deadFlockerProbability::Float16
     neighborhood_distance:: Real
     jump::Float64
 
@@ -38,7 +38,7 @@ global field = Field2D(width,height,boids.neighborhood_distance/10,true)
 
 addfield!(simstate,field)
 
-numBoids = 100
+numBoids = 130
 
 for i in 1:numBoids
     pos = Real2D(rand(Uniform(0, width)), rand(Uniform(0, height)))
@@ -92,7 +92,7 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
         end
 
         for k = 1:length(x)
-            println("sono uscito: $(x[k]) e $(y[k])")
+            # println("sono uscito: $(x[k]) e $(y[k])")
         end
 
 
