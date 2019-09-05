@@ -152,16 +152,16 @@ function fstep(state::SimState, agent::Agent)
         return
     end
 
-    neighbors = getNeighbors(field, thisBoid)
+    neighbors = getNeighbors(field, thisBoid)       #problemi di prestazioni
 
-    avoid = avoidance(neighbors, field, thisBoid)
-    cohe = cohesion(neighbors, field, thisBoid)
-    rand = randomness()
+    avoid = avoidance(neighbors, field, thisBoid)   #problemi di prestazioni
+    cohe = cohesion(neighbors, field, thisBoid)     #problemi di prestazioni
+    rand = randomness()                             #problemi di prestazioni
     cons = consistency(neighbors, field)
     mome = thisBoid.lastPos
 
     dx = boids.cohesion * cohe.x + boids.avoidance * avoid.x + boids.consistency * cons.x + boids.randomness * rand.x + boids.momentum * mome.x
-    dy = boids.cohesion * cohe.y + boids.avoidance * avoid.y + boids.consistency * cons.y + boids.randomness * rand.y + boids.momentum * mome.y
+    dy = boids.cohesion * cohe.y + boids.avoidance * avoid.y + boids.consistency * cons.y + boids.randomness * rand.y + boids.momentum * mome.y     #problemi di prestazioni
 
     dis = √(dx*dx + dy*dy)
     if dis > 0

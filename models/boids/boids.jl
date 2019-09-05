@@ -68,7 +68,7 @@ Profile.clear()
 #
 
 
-
+#@profile  simulate!(myschedule,step);
 output1 = @timed  simulate!(myschedule,step);
 time1 = output1[2];
 
