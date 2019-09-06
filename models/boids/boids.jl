@@ -56,7 +56,7 @@ Profile.init(delay=0.0005, n = 10^7)
 
 Profile.clear()
 
-@profile  simulate!(myschedule,step);
+# @profile  simulate!(myschedule,step);
 output1 = @timed  simulate!(myschedule,step);
 output2 = @timed  simulate!(myschedule,step);
 time1 = output1[2];

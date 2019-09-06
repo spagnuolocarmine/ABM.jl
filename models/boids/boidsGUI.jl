@@ -109,7 +109,7 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
     end
 end
 
-@time  simulateGraphics!(myschedule,100);
+@time  simulateGraphics!(myschedule,400);
 
 
 
