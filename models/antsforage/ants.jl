@@ -13,13 +13,13 @@ function depositPheromone(state::SimState, agent::Agent)
     y::Int64 = location.y
 
     if agent.state.hasFoodItem
-        max = afd.tofoodgrid[x, y]
+        max = afd.toFoodGrid[x, y]
         for dx = -1:1
             for dy = -1:1
                 _x = dx + x
                 _y = dy + y
 
-                if _x < 0 || _y < 0 || _x >= currentfield.width || _y >= currentfield.height
+                if _x <= 0 || _y <= 0 || _x > currentfield.width || _y > currentfield.height
                     continue
                 end
 
@@ -41,7 +41,7 @@ function depositPheromone(state::SimState, agent::Agent)
                 _x = dx + x
                 _y = dy + y
 
-                if _x < 0 || _y < 0 || _x >= currentfield.width || _y >= currentfield.height
+                if _x <= 0 || _y <= 0 || _x > currentfield.width || _y > currentfield.height
                     continue
                 end
 
@@ -81,15 +81,16 @@ function act(state::SimState, agent::Agent)
                 _y = dy + y
 
                 if (dx == 0 & dy == 0) ||
-                        _x < 0 || _y < 0 ||
-                        _x >= currentfield.width || _y >= currentfield.height
+                        _x <= 0 || _y <= 0 ||
+                        _x > currentfield.width || _y > currentfield.height
                     continue
                 end
                 m = afd.toHomeGrid[_x, _y]
                 if m > max
                     count = 2
                 end
-                if m > max || (m == max && rand(Bool))   #TODO RISOLVERE RANDOM (rand(Bool) è provvisorio)
+                count += 1
+                if m > max || (m == max && (rand() < 1.0/count))  #RANDOM NON SO SE E' EFFICACE
                     max = m
                     max_x = _x
                     max_y = _y
@@ -97,23 +98,23 @@ function act(state::SimState, agent::Agent)
             end
         end
         if max == 0 && agent.state.lastPos != nothing              #nowhere to go!
-            if rand(Bool)           #TODO SRISOLVERE RANDOM (rand(Bool) è provvisorio)
+            if rand() < afd.momentumProbability                                    #RANDOM NON SO SE E' EFFICACE
                 xm = x + (x - agent.state.lastPos.x)
                 ym = y + (y - agent.state.lastPos.y)
 
-                if xm >= 0 && xm < currentfield.width && ym >= 0 && ym < currentfield.height     #aggiungere ostacoli in futuro
+                if xm > 0 && xm <= currentfield.width && ym > 0 && ym <= currentfield.height     #aggiungere ostacoli in futuro
                     max_x = xm
                     max_y = ym
                 end
             end
 
-        elseif rand(Bool)                          #TODO RISOLVERE RANDOM (rand(Bool) è provvisorio)
+        elseif rand() < afd.randomActionProbability                        #RANDOM NON SO SE E' EFFICACE
             xd = rand(-1:1)
             yd = rand(-1:1)
             xm = x + xd
             ym = y + yd
 
-            if !(xd == 0 && yd == 0) && xm >= 0 && xm <= currentfield.width && ym >= 0 && ym < currentfield.height
+            if !(xd == 0 && yd == 0) && xm > 0 && xm <= currentfield.width && ym > 0 && ym <= currentfield.height
                 max_x = xm;
                 max_y = ym;
             end
@@ -141,15 +142,16 @@ function act(state::SimState, agent::Agent)
                 _y::Int64 = dy + y
 
                 if (dx == 0 & dy == 0) ||
-                        _x < 0 || _y < 0 ||
-                        _x >= currentfield.width || _y >= currentfield.height
+                        _x <= 0 || _y <= 0 ||
+                        _x > currentfield.width || _y > currentfield.height
                     continue
                 end
                 m = afd.toFoodGrid[_x, _y]
                 if m > max
                     count = 2
                 end
-                if m > max || (m == max && rand(Bool))           #TODO RISOLVERE RANDOM (rand(Bool) è provvisorio)
+                count += 1
+                if m > max || (m == max && (rand() < 1.0/count))           #TODO RISOLVERE RANDOM (rand(Bool) è provvisorio)
                     max = m
                     max_x = _x
                     max_y = _y
@@ -157,22 +159,22 @@ function act(state::SimState, agent::Agent)
             end
         end
         if max == 0 && agent.state.lastPos != nothing              #nowhere to go!
-            if rand(Bool)           #TODO RISOLVERE RANDOM (rand(Bool) è provvisorio)
+            if rand() < afd.momentumProbability           #TODO RISOLVERE RANDOM (rand(Bool) è provvisorio)
                 xm = x + (x - agent.state.lastPos.x)
                 ym = y + (y - agent.state.lastPos.y)
 
-                if xm >= 0 && xm < currentfield.width && ym >= 0 && ym < currentfield.height     #aggiungere ostacoli in futuro
+                if xm > 0 && xm <= currentfield.width && ym > 0 && ym <= currentfield.height     #aggiungere ostacoli in futuro
                     max_x = xm
                     max_y = ym
                 end
             end
 
-        elseif rand(Bool)           #TODO SISOLVERE RANDOM (rand(Bool) è provvisorio)
+        elseif rand() < afd.randomActionProbability          #TODO SISOLVERE RANDOM (rand(Bool) è provvisorio)
             xd = rand(-1:1)
             yd = rand(-1:1)
             xm = x + xd
             ym = y + yd
-            if !(xd == 0 && yd == 0) && xm >= 0 && xm <= currentfield.width && ym >= 0 && ym < currentfield.height
+            if !(xd == 0 && yd == 0) && xm > 0 && xm <= currentfield.width && ym > 0 && ym <= currentfield.height
                 max_x = xm;
                 max_y = ym;
             end
@@ -207,7 +209,7 @@ end
 mutable struct AntData
     name::String
     pos::Real2D
-    reward::Float64
+    reward::Float16
     hasFoodItem::Bool
     lastPos::Real2D
     #AntData(name, pos, reward, hasFoodItem) = new(name, pos, reward, hasFoodItem)

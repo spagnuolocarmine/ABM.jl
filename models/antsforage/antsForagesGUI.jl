@@ -27,28 +27,28 @@ mutable struct AntsForageData
     toFoodGrid
     toHomeGrid
 
-    AntsForageData() = new(1, 2, 0.9, 0.9^√2, 0.999, 0.8, 0.1, 1.0, -1, 3, zeros(Int64, convert(Int, height), convert(Int, width)), zeros(Int64, convert(Int, height), convert(Int, width)))
+    AntsForageData() = new(1, 2, 0.9, 0.9^√2, 0.999, 0.8, 0.1, 1.0, -1, 3, ones(Int64, convert(Int, height), convert(Int, width)), ones(Int64, convert(Int, height), convert(Int, width)))
 
 end
 
 
 simstate = SimState()
 myschedule = Schedule(simstate)
-width = 150
-height = 150
+width = 80
+height = 80
 neighborhood_distance = 10
 
-global field = Field2D(width,height,neighborhood_distance/1.5,false)
+global field = Field2D(width,height,neighborhood_distance/10,false)
 
 global afd = AntsForageData()
 
 #coordinates HOME
-global const HOME_X = 15
+global const HOME_X = 70
 global const HOME_Y = 15
 
 #coordinates FOOD
-global const FOOD_X = width - 15
-global const FOOD_Y = height - 15
+global const FOOD_X = 40
+global const FOOD_Y = 5
 
 #values PHEROMONE
 """global const IMPOSSIBLY_BAD_PHEROMONE = -1
@@ -72,7 +72,7 @@ patchFood = Patch(afd.FOOD)
 setObjectLocation!(field, patchHome, posHome)
 setObjectLocation!(field, patchFood, posFood)
 
-numAnts = 10
+numAnts = 1000
 """evaporationConstant = 0.999
 afReward = 1.0
 updateCutDown = 0.9
@@ -111,33 +111,37 @@ for i in 1:numAnts
 end
 
 function simulateGraphics!(schedule::Schedule, nsteps::Int64)
-    @gif for i = 1:nsteps
+    for i = 1:nsteps
         println("[",schedule.steps,"] time: ",schedule.time)
 
         field = schedule.simstate.fields[length(schedule.simstate.fields)]
         points = collect(getAllObjects(field))
-        println("fino a qua ci arrivo")
+        #println("fino a qua ci arrivo")
         x = []
-        println("pure qua ci arrivo")
+        #println("pure qua ci arrivo")
         y = []
-        println("sono quasi al for")
+        #println("sono quasi al for")
         for j = 1:length(points)
             push!(x, points[j].x)
             push!(y, points[j].y)
         end
 
-        println("sono uscito: $x e $y")
+        for k = 1:length(x)
+            # println("sono uscito: $(x[k]) e $(y[k])")
+        end
 
-        scatter!(x, y, shape = :star5, color = :black,
-     markersize = 10)
 
-        println("ho anche stampato jee")
+        scatter(x, y, shape = :rtriangle, color = :black,
+         xlims = (0, width), ylim = (0, height), size = (800, 800))
+
+         gui()
+
+        #println("ho anche stampato")
 
         step!(schedule)
 
-        println("step complet")
-    end every 1
+        #println("step complet")
+    end
 end
 
-
-@time  simulateGraphics!(myschedule,10);
+@time  simulateGraphics!(myschedule,400);

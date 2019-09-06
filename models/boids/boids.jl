@@ -51,25 +51,16 @@ end
 #@time simulate!(myschedule,10)
 
 using Profile
-#using ProfileView
-using Juno
+
 Profile.init(delay=0.0005, n = 10^7)
 
 Profile.clear()
-# @time Profile.@profile simulate!(myschedule,10);
-# Juno.profiler()
 
-# @time step!(myschedule)
-# println("size ",length(field.fO))
-# @time step!(myschedule)
-# println("size ",length(field.fO))
-# @time step!(myschedule)
-# println("size ",length(field.fO))
-#
-
-
-#@profile  simulate!(myschedule,step);
+@profile  simulate!(myschedule,step);
 output1 = @timed  simulate!(myschedule,step);
+output2 = @timed  simulate!(myschedule,step);
 time1 = output1[2];
+time2 = output2[2];
 
-println("time: $time1, step/s: $(step/time1)");
+println("time1: $time1, step/s: $(step/time1)");
+println("time2: $time2, step/s: $(step/time2)");
