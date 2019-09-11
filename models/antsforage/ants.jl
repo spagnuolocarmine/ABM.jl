@@ -89,11 +89,13 @@ function act(state::SimState, agent::Agent)
                 if m > max
                     count = 2
                 end
-                count += 1
+
                 if m > max || (m == max && (rand() < 1.0/count))  #RANDOM NON SO SE E' EFFICACE
                     max = m
                     max_x = _x
                     max_y = _y
+
+                    count += 1
                 end
             end
         end
@@ -125,6 +127,7 @@ function act(state::SimState, agent::Agent)
 
         for i = 1: length(objAtLoc)
             if objAtLoc[i].state == afd.HOME       #TODO non so se funziona
+                println("oggetto: ",objAtLoc[i].state, " FOOD: ", afd.HOME)
                 agent.state.reward = afd.afReward
                 agent.state.hasFoodItem = !agent.state.hasFoodItem
             end
@@ -185,6 +188,7 @@ function act(state::SimState, agent::Agent)
 
         for i = 1: length(objAtLoc)
             if objAtLoc[i].state == afd.FOOD       #TODO non so se funziona
+                println("oggetto: ",objAtLoc[i].state, " FOOD: ", afd.FOOD)
                 agent.state.reward = afd.afReward
                 agent.state.hasFoodItem = !agent.state.hasFoodItem
             end
