@@ -12,6 +12,8 @@ function depositPheromone(state::SimState, agent::Agent)
     x::Int64 = location.x
     y::Int64 = location.y
 
+    println("#######reward  === $(agent.state.reward)")
+
     if agent.state.hasFoodItem
         max = afd.toFoodGrid[x, y]
         for dx = -1:1
@@ -49,7 +51,7 @@ function depositPheromone(state::SimState, agent::Agent)
                     *(dx * dy != 0 ?         #diagonal corners
                     afd.diagonalCutDown : afd.updateCutDown) +
                     agent.state.reward
-
+                println("#####  m: $m ---- max: $max ####")
                 if m > max
                     max = m
                 end
@@ -90,13 +92,13 @@ function act(state::SimState, agent::Agent)
                     count = 2
                 end
 
+                count += 1
                 if m > max || (m == max && (rand() < 1.0/count))  #RANDOM NON SO SE E' EFFICACE
                     max = m
                     max_x = _x
                     max_y = _y
-
-                    count += 1
                 end
+
             end
         end
         if max == 0 && agent.state.lastPos != nothing              #nowhere to go!
@@ -159,6 +161,7 @@ function act(state::SimState, agent::Agent)
                     max_x = _x
                     max_y = _y
                 end
+
             end
         end
         if max == 0 && agent.state.lastPos != nothing              #nowhere to go!

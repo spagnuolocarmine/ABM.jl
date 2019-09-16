@@ -79,11 +79,10 @@ randomActionProbability = 0.1"""
 addfield!(simstate,field)
 
 pos = Real2D(HOME_X, HOME_Y)
-initialReward = 0.0
 
 
 for i in 1:numAnts
-    a = AntData("Ant", pos, initialReward, false, posHome)
+    a = AntData("Ant", pos, afd.afReward, false, posHome)
     ant = Agent(fstep,a)
     setObjectLocation!(field, ant, pos)
     scheduleRepeating!(myschedule,ant)

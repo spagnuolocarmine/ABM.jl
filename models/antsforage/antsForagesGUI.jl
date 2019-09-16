@@ -27,15 +27,15 @@ mutable struct AntsForageData
     toFoodGrid
     toHomeGrid
 
-    AntsForageData() = new(1, 2, 0.9, 0.9^√2, 0.999, 0.8, 0.1, 1.0, -1, 3, ones(Int64, convert(Int, height), convert(Int, width)), ones(Int64, convert(Int, height), convert(Int, width)))
+    AntsForageData() = new(1, 2, 0.9, 0.9^√2, 0.999, 0.8, 0.1, 1.0, -1, 3, zeros(Int64, convert(Int, height), convert(Int, width)), zeros(Int64, convert(Int, height), convert(Int, width)))
 
 end
 
 
 simstate = SimState()
 myschedule = Schedule(simstate)
-width = 80
-height = 80
+width = 30
+height = 30
 neighborhood_distance = 10
 
 global field = Field2D(width,height,neighborhood_distance/10,false)
@@ -43,12 +43,12 @@ global field = Field2D(width,height,neighborhood_distance/10,false)
 global afd = AntsForageData()
 
 #coordinates HOME
-global const HOME_X = 70
-global const HOME_Y = 15
+global const HOME_X = 20
+global const HOME_Y = 20
 
 #coordinates FOOD
-global const FOOD_X = 40
-global const FOOD_Y = 5
+    global const FOOD_X = 10
+global const FOOD_Y = 10
 
 #values PHEROMONE
 """global const IMPOSSIBLY_BAD_PHEROMONE = -1
@@ -72,7 +72,7 @@ patchFood = Patch(afd.FOOD)
 setObjectLocation!(field, patchHome, posHome)
 setObjectLocation!(field, patchFood, posFood)
 
-numAnts = 1000
+numAnts = 1
 """evaporationConstant = 0.999
 afReward = 1.0
 updateCutDown = 0.9
@@ -85,7 +85,6 @@ randomActionProbability = 0.1"""
 addfield!(simstate,field)
 
 pos = Real2D(HOME_X, HOME_Y)
-initialReward = 0.0
 
 
 
@@ -94,7 +93,7 @@ initialReward = 0.0
 
 
 for i in 1:numAnts
-    a = AntData("Ant", pos, initialReward, false, posHome)
+    a = AntData("Ant", pos, afd.afReward, false, posHome)
     ant = Agent(fstep,a)
     setObjectLocation!(field, ant, pos)
     scheduleRepeating!(myschedule,ant)
@@ -127,13 +126,14 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
         end
 
         for k = 1:length(x)
-            # println("sono uscito: $(x[k]) e $(y[k])")
+            println("sono uscito: $(x[k]) e $(y[k])")
         end
-
 
         scatter(x, y, shape = :rtriangle, color = :black,
          xlims = (0, width), ylim = (0, height), size = (800, 800))
 
+         println(afd.toHomeGrid)
+         sleep(0.5)
          gui()
 
         #println("ho anche stampato")
@@ -144,4 +144,4 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
     end
 end
 
-@time  simulateGraphics!(myschedule,400);
+@time  simulateGraphics!(myschedule,1);
