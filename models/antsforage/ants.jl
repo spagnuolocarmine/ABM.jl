@@ -12,8 +12,6 @@ function depositPheromone(state::SimState, agent::Agent)
     x::Int64 = location.x
     y::Int64 = location.y
 
-    println("#######reward  === $(agent.state.reward)")
-
     if agent.state.hasFoodItem
         max = afd.toFoodGrid[x, y]
         for dx = -1:1
@@ -25,9 +23,9 @@ function depositPheromone(state::SimState, agent::Agent)
                     continue
                 end
 
-                m = afd.toFoodGrid[_x, _y]
-                    *(dx * dy != 0 ?         #diagonal corners
-                    afd.diagonalCutDown : afd.updateCutDown) +
+                m = (afd.toHomeGrid[_x, _y]
+                    *((dx * dy != 0 ?         #diagonal corners
+                    afd.diagonalCutDown : afd.updateCutDown))) +
                     agent.state.reward
 
                 if m > max
@@ -47,11 +45,11 @@ function depositPheromone(state::SimState, agent::Agent)
                     continue
                 end
 
-                m = afd.toHomeGrid[_x, _y]
-                    *(dx * dy != 0 ?         #diagonal corners
-                    afd.diagonalCutDown : afd.updateCutDown) +
+                m = (afd.toHomeGrid[_x, _y]
+                    *((dx * dy != 0 ?         #diagonal corners
+                    afd.diagonalCutDown : afd.updateCutDown))) +
                     agent.state.reward
-                println("#####  m: $m ---- max: $max ####")
+
                 if m > max
                     max = m
                 end
@@ -92,8 +90,7 @@ function act(state::SimState, agent::Agent)
                     count = 2
                 end
 
-                count += 1
-                if m > max || (m == max && (rand() < 1.0/count))  #RANDOM NON SO SE E' EFFICACE
+                if m > max || (m == max && (rand() < 1.0/(count += 1)))  #RANDOM NON SO SE E' EFFICACE
                     max = m
                     max_x = _x
                     max_y = _y
@@ -155,8 +152,7 @@ function act(state::SimState, agent::Agent)
                 if m > max
                     count = 2
                 end
-                count += 1
-                if m > max || (m == max && (rand() < 1.0/count))           #TODO RISOLVERE RANDOM (rand(Bool) è provvisorio)
+                if m > max || (m == max && (rand() < 1.0/(count += 1)))           #TODO RISOLVERE RANDOM (rand(Bool) è provvisorio)
                     max = m
                     max_x = _x
                     max_y = _y
