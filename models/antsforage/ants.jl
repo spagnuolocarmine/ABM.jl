@@ -23,7 +23,7 @@ function depositPheromone(state::SimState, agent::Agent)
                     continue
                 end
 
-                m = (afd.toHomeGrid[_x, _y]
+                m = (afd.toFoodGrid[_x, _y]
                     *((dx * dy != 0 ?         #diagonal corners
                     afd.diagonalCutDown : afd.updateCutDown))) +
                     agent.state.reward
@@ -90,7 +90,7 @@ function act(state::SimState, agent::Agent)
                     count = 2
                 end
 
-                if m > max || (m == max && (rand() < 1.0/(count += 1)))  #RANDOM NON SO SE E' EFFICACE
+                if m > max || (m == max && rand() < 1.0/(count += 1))  #RANDOM NON SO SE E' EFFICACE
                     max = m
                     max_x = _x
                     max_y = _y
@@ -128,10 +128,8 @@ function act(state::SimState, agent::Agent)
 
         for i = 1: length(objAtLoc)
             if objAtLoc[i].state == afd.HOME       #TODO non so se funziona
-                println("oggetto: ",objAtLoc[i].state, " HOME: ", afd.HOME)
                 agent.state.reward = afd.afReward
                 agent.state.hasFoodItem = !agent.state.hasFoodItem
-                println("############$(agent.state.hasFoodItem)##########")
             end
         end
 
@@ -155,7 +153,7 @@ function act(state::SimState, agent::Agent)
                 if m > max
                     count = 2
                 end
-                if m > max || (m == max && (rand() < 1.0/(count += 1)))
+                if m > max || (m == max && rand() < 1.0/(count += 1))
                     max = m
                     max_x = _x
                     max_y = _y
@@ -191,7 +189,6 @@ function act(state::SimState, agent::Agent)
 
         for i = 1: length(objAtLoc)
             if objAtLoc[i].state == afd.FOOD
-                println("oggetto: ",objAtLoc[i].state, " FOOD: ", afd.FOOD)
                 agent.state.reward = afd.afReward
                 agent.state.hasFoodItem = !agent.state.hasFoodItem
             end
@@ -202,8 +199,6 @@ end
 
 
 function fstep(state::SimState, agent::Agent)
-
-    #afd = AntsForageData()
 
     afd.toFoodGrid *= afd.evaporationConstant
     afd.toHomeGrid *= afd.evaporationConstant
@@ -219,53 +214,4 @@ mutable struct AntData
     reward::Float16
     hasFoodItem::Bool
     lastPos::Real2D
-    #AntData(name, pos, reward, hasFoodItem) = new(name, pos, reward, hasFoodItem)
-
 end
-
-
-"""simstate = SimState()
-myschedule = Schedule(simstate)
-width = 150.0
-height = 150.0
-neighborhood_distance = 0
-
-global field = Field2D(width,height,neighborhood_distance/1.5,true)
-
-
-#coordinates HOME
-global const HOME_X = 15.0
-global const HOME_Y = 15.0
-
-#coordinates FOOD
-global const FOOD_X = 135.0
-global const FOOD_Y = 135.0
-
-#values PHEROMONE
-global const IMPOSSIBLY_BAD_PHEROMONE = -1
-global const LIKELY_MAX_PHEROMONE = 3
-
-#POINT HOME AND FOOD
-pointHome = Real2D(HOME_X, HOME_Y)
-pointFood = Real2D(FOOD_X, FOOD_Y)
-
-#MATRICES
-toFoodGrid = zeros(height, width)
-toHomeGrid = zeros(height, width)
-
-updateCutDown = 0.9
-diagonalCutDown = updateCutDown^√2
-
-addfield!(simstate,field)"""
-
-
-"""pos = Real2D(HOME_X, HOME_Y)
-initialReward = 0.0
-for i in 1:10000
-    a = AntData("Ant", pos, initialReward, false)
-    ant = Agent(fstep,a)
-    setObjectLocation!(field, ant, pos)
-    scheduleRepeating!(myschedule,ant)
-end
-
-@time  simulate!(myschedule,10);"""

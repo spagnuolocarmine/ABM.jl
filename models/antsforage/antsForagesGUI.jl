@@ -47,24 +47,13 @@ global const HOME_X = 75
 global const HOME_Y = 75
 
 #coordinates FOOD
-    global const FOOD_X = 50
-global const FOOD_Y = 50
+global const FOOD_X = 25
+global const FOOD_Y = 115
 
-#values PHEROMONE
-"""global const IMPOSSIBLY_BAD_PHEROMONE = -1
-global const LIKELY_MAX_PHEROMONE = 3"""
 
 #POINT HOME AND FOOD
 posHome = Real2D(HOME_X, HOME_Y)
 posFood = Real2D(FOOD_X, FOOD_Y)
-
-#MATRICES
-"""toFoodGrid = zeros(Int64, height, width)
-   toHomeGrid = zeros(Int64, height, width)"""
-
-#values SITES
-"""global const HOME = 1
-global const FOOD = 2"""
 
 patchHome = Patch(afd.HOME)
 patchFood = Patch(afd.FOOD)
@@ -72,41 +61,17 @@ patchFood = Patch(afd.FOOD)
 setObjectLocation!(field, patchHome, posHome)
 setObjectLocation!(field, patchFood, posFood)
 
-numAnts = 1000
-"""evaporationConstant = 0.999
-afReward = 1.0
-updateCutDown = 0.9
-diagonalCutDown = updateCutDown^√2"""
-
-#PROBABILITYS
-"""momentumProbability = 0.8
-randomActionProbability = 0.1"""
+numAnts = 200
 
 addfield!(simstate,field)
 
 pos = Real2D(HOME_X, HOME_Y)
-
-
-
-    #gr(show = true) # in IJulia this would be: gr(show = :ijulia)       ROBA GRAFICA
-
-
 
 for i in 1:numAnts
     a = AntData("Ant", pos, afd.afReward, false, posHome)
     ant = Agent(fstep,a)
     setObjectLocation!(field, ant, pos)
     scheduleRepeating!(myschedule,ant)
-
-
-
-        #v = getAllObjects(field)
-
-        #x = 1; y = 10;
-
-        #display(plot(x,y))
-
-
 end
 
 function simulateGraphics!(schedule::Schedule, nsteps::Int64)
@@ -148,10 +113,10 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
         #     println("sono uscito: $(x[k]) e $(y[k])")
         # end
 
-        scatter(homex, homey, shape = :square, color = :green, markersize = 3,
+        scatter(homex, homey, shape = :square, color = :blue, markersize = 3,
          xlims = (0, width), ylim = (0, height), size = (800, 800))
 
-         scatter!(foodx, foody, shape = :square, color = :purple, markersize = 3,
+         scatter!(foodx, foody, shape = :square, color = :yellow, markersize = 3,
           xlims = (0, width), ylim = (0, height), size = (800, 800))
 
         scatter!(x, y, shape = :circle, color = :red, markersize = 5,
@@ -164,7 +129,7 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
         step!(schedule)
 
         #println("step complet")
-    end), "ants4.mp4", fps = 15)
+    end), "ants6.mp4", fps = 30)
 end
 
-@time  simulateGraphics!(myschedule,3000);
+@time  simulateGraphics!(myschedule,600);
