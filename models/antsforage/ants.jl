@@ -7,7 +7,7 @@ using Parameters
 function depositPheromone(state::SimState, agent::Agent)
 
     currentfield = state.fields[length(state.fields)]
-    location :: Real2D = getObjectLocation(currentfield, agent)
+    location :: Real2D = agent.state.pos
 
     x::Int64 = location.x
     y::Int64 = location.y
@@ -64,7 +64,7 @@ end
 function act(state::SimState, agent::Agent)
 
     currentfield = state.fields[length(state.fields)]
-    location :: Real2D = getObjectLocation(currentfield, agent)
+    location :: Real2D = agent.state.pos
 
     x = location.x
     y = location.y
@@ -120,15 +120,18 @@ function act(state::SimState, agent::Agent)
                 max_y = ym;
             end
         end
-        setObjectLocation!(currentfield, agent, Real2D(max_x, max_y))
 
-        objAtLoc = getObjectsAtLocation(currentfield, Real2D(max_x, max_y))
+        agent.state.pos = Real2D(max_x, max_y)
+        setObjectLocation!(currentfield, agent, agent.state.pos)
+
+        objAtLoc = getObjectsAtLocation(currentfield, agent.state.pos)
 
         for i = 1: length(objAtLoc)
             if objAtLoc[i].state == afd.HOME       #TODO non so se funziona
-                println("oggetto: ",objAtLoc[i].state, " FOOD: ", afd.HOME)
+                println("oggetto: ",objAtLoc[i].state, " HOME: ", afd.HOME)
                 agent.state.reward = afd.afReward
                 agent.state.hasFoodItem = !agent.state.hasFoodItem
+                println("############$(agent.state.hasFoodItem)##########")
             end
         end
 
@@ -152,7 +155,7 @@ function act(state::SimState, agent::Agent)
                 if m > max
                     count = 2
                 end
-                if m > max || (m == max && (rand() < 1.0/(count += 1)))           #TODO RISOLVERE RANDOM (rand(Bool) è provvisorio)
+                if m > max || (m == max && (rand() < 1.0/(count += 1)))
                     max = m
                     max_x = _x
                     max_y = _y
@@ -161,7 +164,7 @@ function act(state::SimState, agent::Agent)
             end
         end
         if max == 0 && agent.state.lastPos != nothing              #nowhere to go!
-            if rand() < afd.momentumProbability           #TODO RISOLVERE RANDOM (rand(Bool) è provvisorio)
+            if rand() < afd.momentumProbability
                 xm = x + (x - agent.state.lastPos.x)
                 ym = y + (y - agent.state.lastPos.y)
 
@@ -171,7 +174,7 @@ function act(state::SimState, agent::Agent)
                 end
             end
 
-        elseif rand() < afd.randomActionProbability          #TODO SISOLVERE RANDOM (rand(Bool) è provvisorio)
+        elseif rand() < afd.randomActionProbability
             xd = rand(-1:1)
             yd = rand(-1:1)
             xm = x + xd
@@ -181,12 +184,13 @@ function act(state::SimState, agent::Agent)
                 max_y = ym;
             end
         end
-        setObjectLocation!(currentfield, agent, Real2D(max_x, max_y))
+        agent.state.pos = Real2D(max_x, max_y)
+        setObjectLocation!(currentfield, agent, agent.state.pos)
 
-        objAtLoc = getObjectsAtLocation(currentfield, Real2D(max_x, max_y))
+        objAtLoc = getObjectsAtLocation(currentfield, agent.state.pos)
 
         for i = 1: length(objAtLoc)
-            if objAtLoc[i].state == afd.FOOD       #TODO non so se funziona
+            if objAtLoc[i].state == afd.FOOD
                 println("oggetto: ",objAtLoc[i].state, " FOOD: ", afd.FOOD)
                 agent.state.reward = afd.afReward
                 agent.state.hasFoodItem = !agent.state.hasFoodItem

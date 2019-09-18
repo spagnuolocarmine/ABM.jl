@@ -34,8 +34,8 @@ end
 
 simstate = SimState()
 myschedule = Schedule(simstate)
-width = 30
-height = 30
+width = 150
+height = 150
 neighborhood_distance = 10
 
 global field = Field2D(width,height,neighborhood_distance/10,false)
@@ -43,12 +43,12 @@ global field = Field2D(width,height,neighborhood_distance/10,false)
 global afd = AntsForageData()
 
 #coordinates HOME
-global const HOME_X = 20
-global const HOME_Y = 20
+global const HOME_X = 75
+global const HOME_Y = 75
 
 #coordinates FOOD
-    global const FOOD_X = 10
-global const FOOD_Y = 10
+    global const FOOD_X = 50
+global const FOOD_Y = 50
 
 #values PHEROMONE
 """global const IMPOSSIBLY_BAD_PHEROMONE = -1
@@ -72,7 +72,7 @@ patchFood = Patch(afd.FOOD)
 setObjectLocation!(field, patchHome, posHome)
 setObjectLocation!(field, patchFood, posFood)
 
-numAnts = 1
+numAnts = 1000
 """evaporationConstant = 0.999
 afReward = 1.0
 updateCutDown = 0.9
@@ -110,8 +110,8 @@ for i in 1:numAnts
 end
 
 function simulateGraphics!(schedule::Schedule, nsteps::Int64)
-    for i = 1:nsteps
-        println("[",schedule.steps,"] time: ",schedule.time)
+    mp4(@animate(for i = 1:nsteps
+        # println("[",schedule.steps,"] time: ",schedule.time)
 
         field = schedule.simstate.fields[length(schedule.simstate.fields)]
         points = collect(getAllObjects(field))
@@ -120,28 +120,51 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
         #println("pure qua ci arrivo")
         y = []
         #println("sono quasi al for")
+        foodx = []
+        foody = []
+        homex = []
+        homey = []
+
         for j = 1:length(points)
             push!(x, points[j].x)
             push!(y, points[j].y)
         end
 
-        for k = 1:length(x)
-            println("sono uscito: $(x[k]) e $(y[k])")
+        for v = 1:width
+            for w = 1:height
+                if afd.toFoodGrid[v, w] != 0
+                    push!(foodx, v)
+                    push!(foody, w)
+                end
+
+                if afd.toHomeGrid[v, w] != 0
+                    push!(homex, v)
+                    push!(homey, w)
+                end
+            end
         end
 
-        scatter(x, y, shape = :rtriangle, color = :black,
+        # for k = 1:length(x)
+        #     println("sono uscito: $(x[k]) e $(y[k])")
+        # end
+
+        scatter(homex, homey, shape = :square, color = :green, markersize = 3,
          xlims = (0, width), ylim = (0, height), size = (800, 800))
 
-         println(afd.toHomeGrid)
-         sleep(0.5)
-         gui()
+         scatter!(foodx, foody, shape = :square, color = :purple, markersize = 3,
+          xlims = (0, width), ylim = (0, height), size = (800, 800))
+
+        scatter!(x, y, shape = :circle, color = :red, markersize = 5,
+         xlims = (0, width), ylim = (0, height), size = (800, 800))
+
+         # gui()
 
         #println("ho anche stampato")
 
         step!(schedule)
 
         #println("step complet")
-    end
+    end), "ants4.mp4", fps = 15)
 end
 
-@time  simulateGraphics!(myschedule,1);
+@time  simulateGraphics!(myschedule,3000);
