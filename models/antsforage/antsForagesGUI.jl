@@ -47,8 +47,8 @@ global const HOME_X = 75
 global const HOME_Y = 75
 
 #coordinates FOOD
-    global const FOOD_X = 50
-global const FOOD_Y = 50
+    global const FOOD_X = 25
+global const FOOD_Y = 115
 
 #values PHEROMONE
 """global const IMPOSSIBLY_BAD_PHEROMONE = -1
@@ -72,7 +72,7 @@ patchFood = Patch(afd.FOOD)
 setObjectLocation!(field, patchHome, posHome)
 setObjectLocation!(field, patchFood, posFood)
 
-numAnts = 1000
+numAnts = 200
 """evaporationConstant = 0.999
 afReward = 1.0
 updateCutDown = 0.9
@@ -148,10 +148,10 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
         #     println("sono uscito: $(x[k]) e $(y[k])")
         # end
 
-        scatter(homex, homey, shape = :square, color = :green, markersize = 3,
+        scatter(homex, homey, shape = :square, color = :blue, markersize = 3,
          xlims = (0, width), ylim = (0, height), size = (800, 800))
 
-         scatter!(foodx, foody, shape = :square, color = :purple, markersize = 3,
+         scatter!(foodx, foody, shape = :square, color = :yellow, markersize = 3,
           xlims = (0, width), ylim = (0, height), size = (800, 800))
 
         scatter!(x, y, shape = :circle, color = :red, markersize = 5,
@@ -164,7 +164,7 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
         step!(schedule)
 
         #println("step complet")
-    end), "ants4.mp4", fps = 15)
+    end), "ants6.mp4", fps = 30)
 end
 
-@time  simulateGraphics!(myschedule,3000);
+@time  simulateGraphics!(myschedule,1000);
