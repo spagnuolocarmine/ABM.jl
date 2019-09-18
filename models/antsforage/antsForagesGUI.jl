@@ -47,7 +47,11 @@ global const HOME_X = 75
 global const HOME_Y = 75
 
 #coordinates FOOD
+<<<<<<< HEAD
 global const FOOD_X = 25
+=======
+    global const FOOD_X = 25
+>>>>>>> 57d1936329bdfe1f240a638a80cf215c5b101f9e
 global const FOOD_Y = 115
 
 
@@ -62,6 +66,17 @@ setObjectLocation!(field, patchHome, posHome)
 setObjectLocation!(field, patchFood, posFood)
 
 numAnts = 200
+<<<<<<< HEAD
+=======
+"""evaporationConstant = 0.999
+afReward = 1.0
+updateCutDown = 0.9
+diagonalCutDown = updateCutDown^√2"""
+
+#PROBABILITYS
+"""momentumProbability = 0.8
+randomActionProbability = 0.1"""
+>>>>>>> 57d1936329bdfe1f240a638a80cf215c5b101f9e
 
 addfield!(simstate,field)
 
@@ -132,4 +147,8 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
     end), "ants6.mp4", fps = 30)
 end
 
+<<<<<<< HEAD
 @time  simulateGraphics!(myschedule,600);
+=======
+@time  simulateGraphics!(myschedule,1000);
+>>>>>>> 57d1936329bdfe1f240a638a80cf215c5b101f9e
