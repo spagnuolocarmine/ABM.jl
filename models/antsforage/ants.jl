@@ -95,7 +95,6 @@ function act(state::SimState, agent::Agent)
                     max_x = _x
                     max_y = _y
                 end
-
             end
         end
         if max == 0 && agent.state.lastPos != nothing              #nowhere to go!
@@ -153,7 +152,7 @@ function act(state::SimState, agent::Agent)
                 if m > max
                     count = 2
                 end
-                if m > max || (m == max && rand() < 1.0/(count += 1))
+                if m > max || (m == max && !(rand() < 1.0/(count += 1)))    #fatto qualcoasa
                     max = m
                     max_x = _x
                     max_y = _y
