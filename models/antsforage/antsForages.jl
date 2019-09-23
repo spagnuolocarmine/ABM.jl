@@ -15,8 +15,8 @@ mutable struct AntsForageData
     randomActionProbability::Float64
     afReward::Float64
 
-    IMPOSSIBLY_BAD_PHEROMONE::Int8
-    LIKELY_MAX_PHEROMONE::Int8
+    IMPOSSIBLY_BAD_PHEROMONE::Float16
+    LIKELY_MAX_PHEROMONE::Float16
 
     toFoodGrid
     toHomeGrid

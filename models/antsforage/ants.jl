@@ -80,7 +80,7 @@ function act(state::SimState, agent::Agent)
                 _x = dx + x
                 _y = dy + y
 
-                if (dx == 0 & dy == 0) ||
+                if (dx == 0 && dy == 0) ||
                         _x <= 0 || _y <= 0 ||
                         _x > currentfield.width || _y > currentfield.height
                     continue
@@ -90,7 +90,7 @@ function act(state::SimState, agent::Agent)
                     count = 2
                 end
 
-                if m > max || (m == max && rand() < 1.0/(count += 1))  #RANDOM NON SO SE E' EFFICACE
+                if m > max || (m == max && rand() < 1.0/(count += 1))
                     max = m
                     max_x = _x
                     max_y = _y
@@ -99,7 +99,7 @@ function act(state::SimState, agent::Agent)
             end
         end
         if max == 0 && agent.state.lastPos != nothing              #nowhere to go!
-            if rand() < afd.momentumProbability                                    #RANDOM NON SO SE E' EFFICACE
+            if rand() < afd.momentumProbability
                 xm = x + (x - agent.state.lastPos.x)
                 ym = y + (y - agent.state.lastPos.y)
 
@@ -109,7 +109,7 @@ function act(state::SimState, agent::Agent)
                 end
             end
 
-        elseif rand() < afd.randomActionProbability                        #RANDOM NON SO SE E' EFFICACE
+        elseif rand() < afd.randomActionProbability
             xd = rand(-1:1)
             yd = rand(-1:1)
             xm = x + xd
@@ -127,7 +127,7 @@ function act(state::SimState, agent::Agent)
         objAtLoc = getObjectsAtLocation(currentfield, agent.state.pos)
 
         for i = 1: length(objAtLoc)
-            if objAtLoc[i].state == afd.HOME       #TODO non so se funziona
+            if objAtLoc[i].state == afd.HOME
                 agent.state.reward = afd.afReward
                 agent.state.hasFoodItem = !agent.state.hasFoodItem
             end
@@ -141,10 +141,10 @@ function act(state::SimState, agent::Agent)
 
         for dx = -1:1
             for dy = -1:1
-                _x::Int64 = dx + x
-                _y::Int64 = dy + y
+                _x = dx + x
+                _y = dy + y
 
-                if (dx == 0 & dy == 0) ||
+                if (dx == 0 && dy == 0) ||
                         _x <= 0 || _y <= 0 ||
                         _x > currentfield.width || _y > currentfield.height
                     continue
