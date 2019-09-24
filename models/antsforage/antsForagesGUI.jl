@@ -129,7 +129,7 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
         step!(schedule)
 
         #println("step complet")
-    end), "ants6.mp4", fps = 30)
+    end), "ants7.mp4", fps = 30)
 end
 
-@time  simulateGraphics!(myschedule,600);
+@time  simulateGraphics!(myschedule,500);

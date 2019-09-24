@@ -152,7 +152,8 @@ function act(state::SimState, agent::Agent)
                 if m > max
                     count = 2
                 end
-                if m > max || (m == max && !(rand() < 1.0/(count += 1)))    #fatto qualcoasa
+                if m > max || (m == max && rand() < 1.0/(count += 1))
+                    println("COUNT: ", count)
                     max = m
                     max_x = _x
                     max_y = _y
