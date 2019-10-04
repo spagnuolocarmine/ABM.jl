@@ -44,21 +44,9 @@ global const HOME_Y = 15
 global const FOOD_X = width - 15
 global const FOOD_Y = height - 15
 
-#values PHEROMONE
-"""global const IMPOSSIBLY_BAD_PHEROMONE = -1
-global const LIKELY_MAX_PHEROMONE = 3"""
-
 #POINT HOME AND FOOD
 posHome = Real2D(HOME_X, HOME_Y)
 posFood = Real2D(FOOD_X, FOOD_Y)
-
-#MATRICES
-"""toFoodGrid = zeros(Int64, height, width)
-   toHomeGrid = zeros(Int64, height, width)"""
-
-#values SITES
-"""global const HOME = 1
-global const FOOD = 2"""
 
 patchHome = Patch(afd.HOME)
 patchFood = Patch(afd.FOOD)
@@ -67,15 +55,7 @@ setObjectLocation!(field, patchHome, posHome)
 setObjectLocation!(field, patchFood, posFood)
 
 numAnts = 10000
-"""evaporationConstant = 0.999
-afReward = 1.0
-updateCutDown = 0.9
-diagonalCutDown = updateCutDown^√2"""
-
-#PROBABILITYS
-"""momentumProbability = 0.8
-randomActionProbability = 0.1"""
-
+step = 10
 addfield!(simstate,field)
 
 pos = Real2D(HOME_X, HOME_Y)
@@ -88,6 +68,8 @@ for i in 1:numAnts
     scheduleRepeating!(myschedule,ant)
 end
 
+output = @timed  simulate!(myschedule,step);
+time = output[2];
 
-
-@time  simulate!(myschedule,10);
+println("time: $time, step/s: $(step/time)");
+9

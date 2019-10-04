@@ -25,7 +25,7 @@ function ==(b1::Bounds{T,P,F}, b2::Bounds{T,P,F}) where {T<:Real, P<:Position, F
         b1.nw == b2.nw &&
             b1.ne == b2.ne &&
                  b1.sw == b2.sw &&
-                    b1.sw == b2.sw      #TODO it may be se?
+                    b1.se == b2.se      #TODO it may be se?
 end
 
 function checkBoundCircle(b::Bounds{T,P,F}, center::P, radius::T, toroidal::Bool) where {T<:Real, P<:Position, F<:Field}

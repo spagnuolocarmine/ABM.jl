@@ -27,7 +27,10 @@ mutable struct AntsForageData
     toFoodGrid
     toHomeGrid
 
-    AntsForageData() = new(1, 2, 0.9, 0.9^√2, 0.999, 0.8, 0.1, 1.0, -1, 3, zeros(Int64, convert(Int, height), convert(Int, width)), zeros(Int64, convert(Int, height), convert(Int, width)))
+    locationGrid
+
+    AntsForageData() = new(1, 2, 0.9, 0.9^√2, 0.999, 0.95, 0.3, 1.0, -1, 3, zeros(Int64, convert(Int, height), convert(Int, width)),
+     zeros(Int64, convert(Int, height), convert(Int, width)), zeros(Int64, convert(Int, height), convert(Int, width)))
 
 end
 
@@ -55,13 +58,18 @@ global const FOOD_Y = 115
 posHome = Real2D(HOME_X, HOME_Y)
 posFood = Real2D(FOOD_X, FOOD_Y)
 
-patchHome = Patch(afd.HOME)
-patchFood = Patch(afd.FOOD)
+afd.locationGrid[posHome.x, posHome.y] = afd.HOME
+afd.locationGrid[posFood.x, posFood.y] = afd.FOOD
 
-setObjectLocation!(field, patchHome, posHome)
-setObjectLocation!(field, patchFood, posFood)
+# patchHome = Patch(afd.HOME)
+# patchFood = Patch(afd.FOOD)
 
-numAnts = 200
+# setObjectLocation!(field, patchHome, posHome)
+# setObjectLocation!(field, patchFood, posFood)
+
+
+
+numAnts = 300
 
 addfield!(simstate,field)
 
@@ -90,6 +98,9 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
         homex = []
         homey = []
 
+        locationx = []
+        locationy = []
+
         for j = 1:length(points)
             push!(x, points[j].x)
             push!(y, points[j].y)
@@ -106,6 +117,11 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
                     push!(homex, v)
                     push!(homey, w)
                 end
+
+                if afd.locationGrid[v, w] != 0
+                    push!(locationx, v)
+                    push!(locationy, w)
+                end
             end
         end
 
@@ -113,11 +129,14 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
         #     println("sono uscito: $(x[k]) e $(y[k])")
         # end
 
-        scatter(homex, homey, shape = :square, color = :blue, markersize = 3,
+        scatter(homex, homey, shape = :square, zcolor=abs.(y .- 0.5), markersize = 3,
          xlims = (0, width), ylim = (0, height), size = (800, 800))
 
          scatter!(foodx, foody, shape = :square, color = :yellow, markersize = 3,
           xlims = (0, width), ylim = (0, height), size = (800, 800))
+
+          scatter!(locationx, locationy, shape = :square, color = :black, markersize = 10,
+           xlims = (0, width), ylim = (0, height), size = (800, 800))
 
         scatter!(x, y, shape = :circle, color = :red, markersize = 5,
          xlims = (0, width), ylim = (0, height), size = (800, 800))
@@ -129,7 +148,7 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
         step!(schedule)
 
         #println("step complet")
-    end), "ants7.mp4", fps = 30)
+    end), "ants10.mp4", fps = 30)
 end
 
-@time  simulateGraphics!(myschedule,500);
+@time  simulateGraphics!(myschedule,100);

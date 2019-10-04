@@ -76,7 +76,7 @@ Profile.clear()
 #
 
 function simulateGraphics!(schedule::Schedule, nsteps::Int64)
-    for i = 1:nsteps
+    mp4(@animate(for i = 1:nsteps
         println("[",schedule.steps,"] time: ",schedule.time)
 
         field = schedule.simstate.fields[length(schedule.simstate.fields)]
@@ -106,7 +106,7 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
         step!(schedule)
 
         #println("step complet")
-    end
+    end), "boids.mp4", fps = 30)
 end
 
 @time  simulateGraphics!(myschedule,400);

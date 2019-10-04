@@ -66,6 +66,8 @@ function act(state::SimState, agent::Agent)
     currentfield = state.fields[length(state.fields)]
     location :: Real2D = agent.state.pos
 
+    pheromoneData = Dict{Real2D, Float64}()
+
     x = location.x
     y = location.y
 
@@ -123,14 +125,14 @@ function act(state::SimState, agent::Agent)
         agent.state.pos = Real2D(max_x, max_y)
         setObjectLocation!(currentfield, agent, agent.state.pos)
 
-        objAtLoc = getObjectsAtLocation(currentfield, agent.state.pos)
-
-        for i = 1: length(objAtLoc)
-            if objAtLoc[i].state == afd.HOME
+        # objAtLoc = getObjectsAtLocation(currentfield, agent.state.pos)
+        #
+        # for i = 1: length(objAtLoc)
+            if afd.locationGrid[agent.state.pos.x, agent.state.pos.y] == afd.HOME
                 agent.state.reward = afd.afReward
                 agent.state.hasFoodItem = !agent.state.hasFoodItem
             end
-        end
+        # end
 
     else
         max = afd.IMPOSSIBLY_BAD_PHEROMONE
@@ -149,11 +151,16 @@ function act(state::SimState, agent::Agent)
                     continue
                 end
                 m = afd.toFoodGrid[_x, _y]
+
+                # push!(
+                #      pheromoneData,
+                #      get!(pheromoneData, Real2D(_x, _y), 0.0)=>m)
+                push!(pheromoneData, Real2D(_x, _y)=>m)
+
                 if m > max
                     count = 2
                 end
-                if m > max || (m == max && rand() < 1.0/(count += 1))
-                    println("COUNT: ", count)
+                if m > max || (m == max && rand() < 1.0/(count+=1))
                     max = m
                     max_x = _x
                     max_y = _y
@@ -163,6 +170,7 @@ function act(state::SimState, agent::Agent)
         end
         if max == 0 && agent.state.lastPos != nothing              #nowhere to go!
             if rand() < afd.momentumProbability
+
                 xm = x + (x - agent.state.lastPos.x)
                 ym = y + (y - agent.state.lastPos.y)
 
@@ -185,16 +193,18 @@ function act(state::SimState, agent::Agent)
         agent.state.pos = Real2D(max_x, max_y)
         setObjectLocation!(currentfield, agent, agent.state.pos)
 
-        objAtLoc = getObjectsAtLocation(currentfield, agent.state.pos)
-
-        for i = 1: length(objAtLoc)
-            if objAtLoc[i].state == afd.FOOD
+        # objAtLoc = getObjectsAtLocation(currentfield, agent.state.pos)
+        #
+        # for i = 1: length(objAtLoc)
+            if afd.locationGrid[agent.state.pos.x, agent.state.pos.y] == afd.FOOD
                 agent.state.reward = afd.afReward
                 agent.state.hasFoodItem = !agent.state.hasFoodItem
             end
-        end
+        # end
     end
     agent.state.lastPos = location
+
+    #println("id: $(agent.id), posizione: $(agent.state.pos), pheromoneData: $(pheromoneData)")
 end
 
 
