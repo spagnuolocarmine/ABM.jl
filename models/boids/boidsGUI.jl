@@ -96,10 +96,9 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
         end
 
 
-        scatter(x, y, shape = :rtriangle, color = :black,
+        scatter(x, y, shape = :rtriangle, color = :red, background_color = :blue,
+         markersize = 6, foreground_color_subplot = :red,
          xlims = (0, width), ylim = (0, height), size = (800, 800))
-
-         gui()
 
         #println("ho anche stampato")
 
@@ -109,7 +108,7 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
     end), "boids.mp4", fps = 30)
 end
 
-@time  simulateGraphics!(myschedule,400);
+@time  simulateGraphics!(myschedule,900);
 
 
 

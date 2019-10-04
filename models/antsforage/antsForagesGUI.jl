@@ -129,17 +129,17 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
         #     println("sono uscito: $(x[k]) e $(y[k])")
         # end
 
-        scatter(homex, homey, shape = :square, zcolor=abs.(y .- 0.5), markersize = 3,
-         xlims = (0, width), ylim = (0, height), size = (800, 800))
+        scatter(homex, homey, shape = :square, color = :blue, markersize = 3,
+         xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
 
          scatter!(foodx, foody, shape = :square, color = :yellow, markersize = 3,
-          xlims = (0, width), ylim = (0, height), size = (800, 800))
+          xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
 
           scatter!(locationx, locationy, shape = :square, color = :black, markersize = 10,
-           xlims = (0, width), ylim = (0, height), size = (800, 800))
+           xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
 
         scatter!(x, y, shape = :circle, color = :red, markersize = 5,
-         xlims = (0, width), ylim = (0, height), size = (800, 800))
+         xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
 
          # gui()
 
@@ -151,4 +151,4 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
     end), "ants10.mp4", fps = 30)
 end
 
-@time  simulateGraphics!(myschedule,100);
+@time  simulateGraphics!(myschedule,900);
