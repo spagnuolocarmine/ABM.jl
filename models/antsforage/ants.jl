@@ -66,8 +66,6 @@ function act(state::SimState, agent::Agent)
     currentfield = state.fields[length(state.fields)]
     location :: Real2D = agent.state.pos
 
-    pheromoneData = Dict{Real2D, Float64}()
-
     x = location.x
     y = location.y
 
@@ -84,7 +82,8 @@ function act(state::SimState, agent::Agent)
 
                 if (dx == 0 && dy == 0) ||
                         _x <= 0 || _y <= 0 ||
-                        _x > currentfield.width || _y > currentfield.height
+                        _x > currentfield.width || _y > currentfield.height ||
+                        afd.obstacleGrid[_x, _y] == 1
                     continue
                 end
                 m = afd.toHomeGrid[_x, _y]
@@ -104,7 +103,8 @@ function act(state::SimState, agent::Agent)
                 xm = x + (x - agent.state.lastPos.x)
                 ym = y + (y - agent.state.lastPos.y)
 
-                if xm > 0 && xm <= currentfield.width && ym > 0 && ym <= currentfield.height     #aggiungere ostacoli in futuro
+                if xm > 0 && xm <= currentfield.width && ym > 0 && ym <= currentfield.height &&
+                    afd.obstacleGrid[xm, ym] == 0     #aggiungere ostacoli in futuro
                     max_x = xm
                     max_y = ym
                 end
@@ -116,7 +116,8 @@ function act(state::SimState, agent::Agent)
             xm = x + xd
             ym = y + yd
 
-            if !(xd == 0 && yd == 0) && xm > 0 && xm <= currentfield.width && ym > 0 && ym <= currentfield.height
+            if !(xd == 0 && yd == 0) && xm > 0 && xm <= currentfield.width && ym > 0 && ym <= currentfield.height &&
+                afd.obstacleGrid[xm, ym] == 0
                 max_x = xm;
                 max_y = ym;
             end
@@ -135,7 +136,7 @@ function act(state::SimState, agent::Agent)
         # end
 
     else
-        max = afd.IMPOSSIBLY_BAD_PHEROMONE
+        max = 0
         max_x = x
         max_y = y
         count = 2
@@ -145,17 +146,33 @@ function act(state::SimState, agent::Agent)
                 _x = dx + x
                 _y = dy + y
 
+                # if max == afd.IMPOSSIBLY_BAD_PHEROMONE
+                #     _x = x + rand(-1:1)
+                #     _y = y + rand(-1:1)
+                #
+                #     if (dx == 0 && dy == 0) ||
+                #             _x <= 0 || _y <= 0 ||
+                #             _x > currentfield.width ||
+                #             _y > currentfield.height ||
+                #             afd.obstacleGrid[_x, _y] == 1
+                #         continue
+                #     end
+                #
+                #     max = 0
+                # end
+
+
+
                 if (dx == 0 && dy == 0) ||
                         _x <= 0 || _y <= 0 ||
-                        _x > currentfield.width || _y > currentfield.height
+                        _x > currentfield.width ||
+                        _y > currentfield.height ||
+                        afd.obstacleGrid[_x, _y] == 1
                     continue
                 end
                 m = afd.toFoodGrid[_x, _y]
 
-                # push!(
-                #      pheromoneData,
-                #      get!(pheromoneData, Real2D(_x, _y), 0.0)=>m)
-                push!(pheromoneData, Real2D(_x, _y)=>m)
+
 
                 if m > max
                     count = 2
@@ -174,7 +191,8 @@ function act(state::SimState, agent::Agent)
                 xm = x + (x - agent.state.lastPos.x)
                 ym = y + (y - agent.state.lastPos.y)
 
-                if xm > 0 && xm <= currentfield.width && ym > 0 && ym <= currentfield.height     #aggiungere ostacoli in futuro
+                if xm > 0 && xm <= currentfield.width && ym > 0 &&
+                    ym <= currentfield.height && afd.obstacleGrid[xm, ym] == 0   #aggiungere ostacoli in futuro
                     max_x = xm
                     max_y = ym
                 end
@@ -185,7 +203,8 @@ function act(state::SimState, agent::Agent)
             yd = rand(-1:1)
             xm = x + xd
             ym = y + yd
-            if !(xd == 0 && yd == 0) && xm > 0 && xm <= currentfield.width && ym > 0 && ym <= currentfield.height
+            if !(xd == 0 && yd == 0) && xm > 0 && xm <= currentfield.width && ym > 0 &&
+                ym <= currentfield.height && afd.obstacleGrid[xm, ym] == 0
                 max_x = xm;
                 max_y = ym;
             end
