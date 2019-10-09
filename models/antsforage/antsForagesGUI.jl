@@ -122,29 +122,29 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
             push!(y, points[j].y)
         end
 
-        # for v = 1:width
-        #     for w = 1:height
-        #         if afd.toFoodGrid[v, w] != 0
-        #             push!(foodx, v)
-        #             push!(foody, w)
-        #         end
-        #
-        #         if afd.toHomeGrid[v, w] != 0
-        #             push!(homex, v)
-        #             push!(homey, w)
-        #         end
-        #
-        #         if afd.locationGrid[v, w] != 0
-        #             push!(locationx, v)
-        #             push!(locationy, w)
-        #         end
-        #
-        #         if afd.obstacleGrid[v, w] != 0
-        #             push!(obstaclex, v)
-        #             push!(obstacley, w)
-        #         end
-        #     end
-        # end
+        for v = 1:width
+            for w = 1:height
+                if afd.toFoodGrid[v, w] != 0
+                    push!(foodx, v)
+                    push!(foody, w)
+                end
+
+                if afd.toHomeGrid[v, w] != 0
+                    push!(homex, v)
+                    push!(homey, w)
+                end
+
+                if afd.locationGrid[v, w] != 0
+                    push!(locationx, v)
+                    push!(locationy, w)
+                end
+
+                if afd.obstacleGrid[v, w] != 0
+                    push!(obstaclex, v)
+                    push!(obstacley, w)
+                end
+            end
+        end
 
         # for k = 1:length(x)
         #     println("sono uscito: $(x[k]) e $(y[k])")
@@ -155,20 +155,23 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
         #     histogram2d(homex, homey, weights = map(f, homex, homey),xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
         # end
 
-        scatter!(homex, homey, marker_z=(map(f, homex, homey)))
+        scatter!(homex, homey, marker_z=((x, y)->begin
+                            x + y
+                        end),
+            xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
             println("prova")
 
-        # scatter!(foodx, foody, shape = :square, color = :yellow, markersize = 3,
-        #     xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
-        #
-        # scatter!(obstaclex, obstacley, shape = :square, color = :orange, markersize = 3,
-        #     xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
-        #
-        # scatter!(locationx, locationy, shape = :square, color = :pink, markersize = 10,
-        #     xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
-        #
-        # scatter!(x, y, shape = :circle, color = :red, markersize = 5,
-        #     xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
+        scatter!(foodx, foody, shape = :square, color = :yellow, markersize = 3,
+            xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
+
+        scatter!(obstaclex, obstacley, shape = :square, color = :orange, markersize = 3,
+            xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
+
+        scatter!(locationx, locationy, shape = :square, color = :pink, markersize = 10,
+            xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
+
+        scatter!(x, y, shape = :circle, color = :red, markersize = 5,
+            xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
 
          # gui()
 
