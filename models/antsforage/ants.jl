@@ -232,6 +232,9 @@ function fstep(state::SimState, agent::Agent)
     afd.toFoodGrid *= afd.evaporationConstant
     afd.toHomeGrid *= afd.evaporationConstant
 
+    # println("toFoodGrid = ", afd.toFoodGrid)
+    # println("toHomeGrid = ", afd.toHomeGrid)
+
     depositPheromone(state::SimState, agent::Agent)
     act(state::SimState, agent::Agent)
 end
