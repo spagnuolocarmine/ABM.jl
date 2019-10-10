@@ -1,13 +1,19 @@
+using Pkg
+Pkg.add("Plots")
 using Plots
+Pkg.add("PyPlot") # Install a different backend # Switch to using the PyPlot.jl backend
+
+using PyPlot
+pyplot()
 
 pyplot(leg = false)
 
-mp4(@animate(for i=1:100
+    i = 2
+
     x = rand(i)
     y = rand(i)
 
-    scatter!(x, y, marker_z=((x, y)->begin
-                        x + y
-                    end), color=:bluesreds, legend =false)
-
-end), "prova1.mp4", fps = 30)
+    w = rand(i)
+    z= rand(i)
+    scatter(x, y, shape = :square, markeralpha = 0.1, markerstrokewidth = 0, color= :blue, legend =false)
+    scatter!(w, z, shape = :square, markeralpha = 0.5, markerstrokewidth = 0, color= :yellow, legend =false)

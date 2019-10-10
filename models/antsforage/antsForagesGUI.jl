@@ -8,11 +8,8 @@ include("ants.jl")
 using Pkg
 Pkg.add("Plots")
 using Plots
-Pkg.add("PyPlot") # Install a different backend # Switch to using the PyPlot.jl backend
-
-using PyPlot
-pyplot()
-
+Pkg.add("PyPlot") # Install a different backend
+pyplot() # Switch to using the PyPlot.jl backend
 
 mutable struct AntsForageData
     HOME::Int8
@@ -41,8 +38,8 @@ end
 
 simstate = SimState()
 myschedule = Schedule(simstate)
-width = 10
-height = 10
+width = 100
+height = 100
 neighborhood_distance = 10
 
 global field = Field2D(width,height,neighborhood_distance/10,false)
@@ -50,12 +47,12 @@ global field = Field2D(width,height,neighborhood_distance/10,false)
 global afd = AntsForageData()
 
 #coordinates HOME
-global const HOME_X = 2
-global const HOME_Y = 2
+global const HOME_X = 20
+global const HOME_Y = 20
 
 #coordinates FOOD
-global const FOOD_X = 8
-global const FOOD_Y = 8
+global const FOOD_X = 80
+global const FOOD_Y = 80
 
 
 #POINT HOME AND FOOD
@@ -80,7 +77,7 @@ afd.locationGrid[posFood.x, posFood.y] = afd.FOOD
 
 
 
-numAnts = 3
+numAnts = 50
 
 addfield!(simstate,field)
 
@@ -94,7 +91,6 @@ for i in 1:numAnts
 end
 
 function simulateGraphics!(schedule::Schedule, nsteps::Int64)
-    f(x, y) = afd.toHomeGrid[x, y]
     mp4(@animate(for i = 1:nsteps
         # println("[",schedule.steps,"] time: ",schedule.time)
 
@@ -105,14 +101,27 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
         #println("pure qua ci arrivo")
         y = []
         #println("sono quasi al for")
-        foodx = []
-        foody = []
+        foodx1 = []
+        foody1 = []
+        foodx2 = []
+        foody2 = []
+        foodx3 = []
+        foody3 = []
+        foodx4 = []
+        foody4 = []
+
 
         obstaclex = []
         obstacley = []
 
-        homex = []
-        homey = []
+        homex1 = []
+        homey1 = []
+        homex2 = []
+        homey2 = []
+        homex3 = []
+        homey3 = []
+        homex4 = []
+        homey4 = []
 
         locationx = []
         locationy = []
@@ -122,17 +131,53 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
             push!(y, points[j].y)
         end
 
+        normHome = afd.toHomeGrid ./ 0.1
+        normFood = afd.toFoodGrid ./ 0.1
+
         for v = 1:width
             for w = 1:height
-                if afd.toFoodGrid[v, w] != 0
-                    push!(foodx, v)
-                    push!(foody, w)
+                if  normFood[v, w] >= 0.1
+                    push!(foodx1, v)
+                    push!(foody1, w)
                 end
 
-                if afd.toHomeGrid[v, w] != 0
-                    push!(homex, v)
-                    push!(homey, w)
+                if  normFood[v, w] >= 0.066 &&  normFood[v, w] < 0.1
+                    push!(foodx2, v)
+                    push!(foody2, w)
                 end
+
+                if  normFood[v, w] >= 0.033 &&  normFood[v, w] < 0.066
+                    push!(foodx3, v)
+                    push!(foody3, w)
+                end
+
+                if  normFood[v, w] < 0.033 && normFood[v, w] != 0
+                    push!(foodx4, v)
+                    push!(foody4, w)
+                end
+
+
+
+                if  normHome[v, w] >= 0.1
+                    push!(homex1, v)
+                    push!(homey1, w)
+                end
+
+                if  normHome[v, w] >= 0.066 &&  normHome[v, w] < 0.1
+                    push!(homex2, v)
+                    push!(homey2, w)
+                end
+
+                if  normHome[v, w] >= 0.033 &&  normHome[v, w] < 0.066
+                    push!(homex3, v)
+                    push!(homey3, w)
+                end
+
+                if  normHome[v, w] < 0.033 && normHome[v, w] != 0
+                    push!(homex4, v)
+                    push!(homey4, w)
+                end
+
 
                 if afd.locationGrid[v, w] != 0
                     push!(locationx, v)
@@ -155,14 +200,33 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
         #     histogram2d(homex, homey, weights = map(f, homex, homey),xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
         # end
 
-        scatter!(homex, homey, marker_z=((x, y)->begin
-                            x + y
-                        end),
+        scatter(homex1, homey1, shape = :square, markeralpha = 1, markerstrokewidth = 0, color = :blue, markersize = 3,
             xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
             println("prova")
 
-        scatter!(foodx, foody, shape = :square, color = :yellow, markersize = 3,
+        scatter!(foodx1, foody1, shape = :square, markeralpha = 1, markerstrokewidth = 0, color = :yellow, markersize = 3,
             xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
+
+        scatter(homex2, homey2, shape = :square, markeralpha = 0.75, markerstrokewidth = 0, color = :blue, markersize = 3,
+            xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
+
+        scatter!(foodx2, foody2, shape = :square, markeralpha = 0.75, markerstrokewidth = 0, color = :yellow, markersize = 3,
+            xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
+
+        scatter(homex3, homey3, shape = :square, markeralpha = 0.5, markerstrokewidth = 0, color = :blue, markersize = 3,
+            xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
+
+        scatter!(foodx3, foody3, shape = :square, markeralpha = 0.5, markerstrokewidth = 0, color = :yellow, markersize = 3,
+            xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
+
+        scatter(homex4, homey4, shape = :square, markeralpha = 0.25, markerstrokewidth = 0, color = :blue, markersize = 3,
+            xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
+
+        scatter!(foodx4, foody4, shape = :square, markeralpha = 0.25, markerstrokewidth = 0, color = :yellow, markersize = 3,
+            xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
+
+
+
 
         scatter!(obstaclex, obstacley, shape = :square, color = :orange, markersize = 3,
             xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
@@ -183,4 +247,4 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
     end), "ants18.mp4", fps = 30)
 end
 
-@time  simulateGraphics!(myschedule,10);
+@time  simulateGraphics!(myschedule,300);

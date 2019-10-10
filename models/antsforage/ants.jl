@@ -136,7 +136,7 @@ function act(state::SimState, agent::Agent)
         # end
 
     else
-        max = 0
+        max = afd.IMPOSSIBLY_BAD_PHEROMONE
         max_x = x
         max_y = y
         count = 2
