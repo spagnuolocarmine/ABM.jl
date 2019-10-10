@@ -38,8 +38,8 @@ end
 
 simstate = SimState()
 myschedule = Schedule(simstate)
-width = 100
-height = 100
+width = 200
+height = 200
 neighborhood_distance = 10
 
 global field = Field2D(width,height,neighborhood_distance/10,false)
@@ -47,12 +47,12 @@ global field = Field2D(width,height,neighborhood_distance/10,false)
 global afd = AntsForageData()
 
 #coordinates HOME
-global const HOME_X = 20
-global const HOME_Y = 20
+global const HOME_X = 175
+global const HOME_Y = 175
 
 #coordinates FOOD
-global const FOOD_X = 80
-global const FOOD_Y = 80
+global const FOOD_X = 25
+global const FOOD_Y = 25
 
 
 #POINT HOME AND FOOD
@@ -62,12 +62,17 @@ posFood = Real2D(FOOD_X, FOOD_Y)
 afd.locationGrid[posHome.x, posHome.y] = afd.HOME
 afd.locationGrid[posFood.x, posFood.y] = afd.FOOD
 
-# for x = 40:80
-#     for y = 70:80
-#         afd.obstacleGrid[x, y] = 1
-#     end
-#
-# end
+for x = 1:120
+    for y = 150:160
+        afd.obstacleGrid[x, y] = 1
+    end
+end
+
+for x = 120:200
+    for y = 50:60
+        afd.obstacleGrid[x, y] = 1
+    end
+end
 
 # patchHome = Patch(afd.HOME)
 # patchFood = Patch(afd.FOOD)
@@ -77,7 +82,7 @@ afd.locationGrid[posFood.x, posFood.y] = afd.FOOD
 
 
 
-numAnts = 50
+numAnts = 300
 
 addfield!(simstate,field)
 
@@ -103,12 +108,12 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
         #println("sono quasi al for")
         foodx1 = []
         foody1 = []
-        foodx2 = []
-        foody2 = []
-        foodx3 = []
-        foody3 = []
-        foodx4 = []
-        foody4 = []
+        # foodx2 = []
+        # foody2 = []
+        # foodx3 = []
+        # foody3 = []
+        # foodx4 = []
+        # foody4 = []
 
 
         obstaclex = []
@@ -116,12 +121,12 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
 
         homex1 = []
         homey1 = []
-        homex2 = []
-        homey2 = []
-        homex3 = []
-        homey3 = []
-        homex4 = []
-        homey4 = []
+        # homex2 = []
+        # homey2 = []
+        # homex3 = []
+        # homey3 = []
+        # homex4 = []
+        # homey4 = []
 
         locationx = []
         locationy = []
@@ -131,52 +136,63 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
             push!(y, points[j].y)
         end
 
-        normHome = afd.toHomeGrid ./ 0.1
-        normFood = afd.toFoodGrid ./ 0.1
+        # normHome = afd.toHomeGrid ./ 1.0e-30
+        # normFood = afd.toFoodGrid ./ 1.0e-30
 
         for v = 1:width
             for w = 1:height
-                if  normFood[v, w] >= 0.1
+                if  afd.toFoodGrid[v, w] != 0
                     push!(foodx1, v)
                     push!(foody1, w)
                 end
 
-                if  normFood[v, w] >= 0.066 &&  normFood[v, w] < 0.1
-                    push!(foodx2, v)
-                    push!(foody2, w)
-                end
-
-                if  normFood[v, w] >= 0.033 &&  normFood[v, w] < 0.066
-                    push!(foodx3, v)
-                    push!(foody3, w)
-                end
-
-                if  normFood[v, w] < 0.033 && normFood[v, w] != 0
-                    push!(foodx4, v)
-                    push!(foody4, w)
-                end
-
-
-
-                if  normHome[v, w] >= 0.1
+                if  afd.toHomeGrid[v, w] != 0
                     push!(homex1, v)
                     push!(homey1, w)
                 end
 
-                if  normHome[v, w] >= 0.066 &&  normHome[v, w] < 0.1
-                    push!(homex2, v)
-                    push!(homey2, w)
-                end
 
-                if  normHome[v, w] >= 0.033 &&  normHome[v, w] < 0.066
-                    push!(homex3, v)
-                    push!(homey3, w)
-                end
-
-                if  normHome[v, w] < 0.033 && normHome[v, w] != 0
-                    push!(homex4, v)
-                    push!(homey4, w)
-                end
+                # if  normFood[v, w] >= 1.0
+                #     push!(foodx1, v)
+                #     push!(foody1, w)
+                # end
+                #
+                # if  normFood[v, w] >= 0.8 &&  normFood[v, w] < 1.0
+                #     push!(foodx2, v)
+                #     push!(foody2, w)
+                # end
+                #
+                # if  normFood[v, w] >= 0.5 &&  normFood[v, w] < 0.8
+                #     push!(foodx3, v)
+                #     push!(foody3, w)
+                # end
+                #
+                # if  normFood[v, w] < 0.5 && normFood[v, w] != 0
+                #     push!(foodx4, v)
+                #     push!(foody4, w)
+                # end
+                #
+                #
+                #
+                # if  normHome[v, w] >= 1.0
+                #     push!(homex1, v)
+                #     push!(homey1, w)
+                # end
+                #
+                # if  normHome[v, w] >= 0.8 &&  normHome[v, w] < 1.0
+                #     push!(homex2, v)
+                #     push!(homey2, w)
+                # end
+                #
+                # if  normHome[v, w] >= 0.5 &&  normHome[v, w] < 0.8
+                #     push!(homex3, v)
+                #     push!(homey3, w)
+                # end
+                #
+                # if  normHome[v, w] < 0.5 && normHome[v, w] != 0
+                #     push!(homex4, v)
+                #     push!(homey4, w)
+                # end
 
 
                 if afd.locationGrid[v, w] != 0
@@ -202,28 +218,27 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
 
         scatter(homex1, homey1, shape = :square, markeralpha = 1, markerstrokewidth = 0, color = :blue, markersize = 3,
             xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
-            println("prova")
 
         scatter!(foodx1, foody1, shape = :square, markeralpha = 1, markerstrokewidth = 0, color = :yellow, markersize = 3,
             xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
 
-        scatter(homex2, homey2, shape = :square, markeralpha = 0.75, markerstrokewidth = 0, color = :blue, markersize = 3,
-            xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
-
-        scatter!(foodx2, foody2, shape = :square, markeralpha = 0.75, markerstrokewidth = 0, color = :yellow, markersize = 3,
-            xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
-
-        scatter(homex3, homey3, shape = :square, markeralpha = 0.5, markerstrokewidth = 0, color = :blue, markersize = 3,
-            xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
-
-        scatter!(foodx3, foody3, shape = :square, markeralpha = 0.5, markerstrokewidth = 0, color = :yellow, markersize = 3,
-            xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
-
-        scatter(homex4, homey4, shape = :square, markeralpha = 0.25, markerstrokewidth = 0, color = :blue, markersize = 3,
-            xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
-
-        scatter!(foodx4, foody4, shape = :square, markeralpha = 0.25, markerstrokewidth = 0, color = :yellow, markersize = 3,
-            xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
+        # scatter(homex2, homey2, shape = :square, markeralpha = 1, markerstrokewidth = 0, color = :black, markersize = 3,
+        #     xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
+        #
+        # scatter!(foodx2, foody2, shape = :square, markeralpha = 0.6, markerstrokewidth = 0, color = :yellow, markersize = 3,
+        #     xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
+        #
+        # scatter(homex3, homey3, shape = :square, markeralpha = 1, markerstrokewidth = 0, color = :green, markersize = 3,
+        #     xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
+        #
+        # scatter!(foodx3, foody3, shape = :square, markeralpha = 0.4, markerstrokewidth = 0, color = :yellow, markersize = 3,
+        #     xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
+        #
+        # scatter(homex4, homey4, shape = :square, markeralpha = 1, markerstrokewidth = 0, color = :orange, markersize = 3,
+        #     xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
+        #
+        # scatter!(foodx4, foody4, shape = :square, markeralpha = 0.2, markerstrokewidth = 0, color = :yellow, markersize = 3,
+        #     xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
 
 
 
@@ -244,7 +259,7 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
         step!(schedule)
 
         #println("step complet")
-    end), "ants18.mp4", fps = 30)
+    end), "ants21.mp4", fps = 30)
 end
 
-@time  simulateGraphics!(myschedule,300);
+@time  simulateGraphics!(myschedule,1000);

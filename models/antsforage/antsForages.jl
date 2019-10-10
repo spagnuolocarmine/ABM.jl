@@ -32,8 +32,8 @@ end
 
 simstate = SimState()
 myschedule = Schedule(simstate)
-width = 100
-height = 100
+width = 200
+height = 200
 neighborhood_distance = 10
 
 global field = Field2D(width,height,neighborhood_distance/10,false)
@@ -71,8 +71,8 @@ afd.locationGrid[posFood.x, posFood.y] = afd.FOOD
 
 
 
-numAnts = 100
-nstep = 100
+numAnts = 51200
+nstep = 10
 
 addfield!(simstate,field)
 
@@ -89,4 +89,3 @@ output = @timed  simulate!(myschedule,nstep);
 time = output[2];
 
 println("time: $time, step/s: $(nstep/time)");
-9
