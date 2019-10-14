@@ -3,6 +3,8 @@ using Revise
 using Distributions
 using BenchmarkTools
 using Parameters
+include("mersenneTwisterFast.jl")
+
 
 function depositPheromone(state::SimState, agent::Agent)
 
@@ -91,7 +93,7 @@ function act(state::SimState, agent::Agent)
                     count = 2
                 end
 
-                if m > max || (m == max && rand() < 1.0/(count += 1))
+                if m > max || (m == max && nextBoolean(1.0/(count += 1))) #rand() < 1.0/(count += 1))
                     max = m
                     max_x = _x
                     max_y = _y
@@ -99,7 +101,7 @@ function act(state::SimState, agent::Agent)
             end
         end
         if max == 0 && agent.state.lastPos != nothing              #nowhere to go!
-            if rand() < afd.momentumProbability
+            if nextBoolean(afd.momentumProbability)#rand() < afd.momentumProbability
                 xm = x + (x - agent.state.lastPos.x)
                 ym = y + (y - agent.state.lastPos.y)
 
@@ -110,7 +112,7 @@ function act(state::SimState, agent::Agent)
                 end
             end
 
-        elseif rand() < afd.randomActionProbability
+        elseif nextBoolean(afd.randomActionProbability)#rand() < afd.randomActionProbability
             xd = rand(-1:1)
             yd = rand(-1:1)
             xm = x + xd
@@ -177,7 +179,7 @@ function act(state::SimState, agent::Agent)
                 if m > max
                     count = 2
                 end
-                if m > max || (m == max && rand() < 1.0/(count+=1))
+                if m > max || (m == max && nextBoolean(1.0/(count+=1)))#rand() < 1.0/(count+=1))
                     max = m
                     max_x = _x
                     max_y = _y
@@ -186,7 +188,7 @@ function act(state::SimState, agent::Agent)
             end
         end
         if max == 0 && agent.state.lastPos != nothing              #nowhere to go!
-            if rand() < afd.momentumProbability
+            if nextBoolean(afd.momentumProbability)#rand() < afd.momentumProbability
 
                 xm = x + (x - agent.state.lastPos.x)
                 ym = y + (y - agent.state.lastPos.y)
@@ -198,7 +200,7 @@ function act(state::SimState, agent::Agent)
                 end
             end
 
-        elseif rand() < afd.randomActionProbability
+        elseif nextBoolean(afd.randomActionProbability)#rand() < afd.randomActionProbability
             xd = rand(-1:1)
             yd = rand(-1:1)
             xm = x + xd

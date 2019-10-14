@@ -47,12 +47,12 @@ global field = Field2D(width,height,neighborhood_distance/10,false)
 global afd = AntsForageData()
 
 #coordinates HOME
-global const HOME_X = 175
-global const HOME_Y = 175
+global const HOME_X = 25
+global const HOME_Y = 25
 
 #coordinates FOOD
-global const FOOD_X = 25
-global const FOOD_Y = 25
+global const FOOD_X = 175
+global const FOOD_Y = 175
 
 
 #POINT HOME AND FOOD
@@ -82,7 +82,7 @@ end
 
 
 
-numAnts = 300
+numAnts = 100
 
 addfield!(simstate,field)
 
