@@ -4,7 +4,7 @@ using Distributions
 using BenchmarkTools
 using Base
 include("ants.jl")
-
+include("mersenneTwisterFast.jl")
 using Pkg
 Pkg.add("Plots")
 using Plots
@@ -262,4 +262,4 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
     end), "ants21.mp4", fps = 30)
 end
 
-@time  simulateGraphics!(myschedule,1000);
+@time  simulateGraphics!(myschedule,10);
