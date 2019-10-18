@@ -47,12 +47,12 @@ global field = Field2D(width,height,neighborhood_distance/10,false)
 global afd = AntsForageData()
 
 #coordinates HOME
-global const HOME_X = 25
-global const HOME_Y = 25
+global const HOME_X = 175
+global const HOME_Y = 175
 
 #coordinates FOOD
-global const FOOD_X = 175
-global const FOOD_Y = 175
+global const FOOD_X = 25
+global const FOOD_Y = 25
 
 
 #POINT HOME AND FOOD
@@ -217,10 +217,10 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
         # end
 
         scatter(homex1, homey1, shape = :square, markeralpha = 1, markerstrokewidth = 0, color = :blue, markersize = 3,
-            xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
+            xlims = (0, width), ylim = (0, height), size = (800, 450), legend =false)
 
         scatter!(foodx1, foody1, shape = :square, markeralpha = 1, markerstrokewidth = 0, color = :yellow, markersize = 3,
-            xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
+            xlims = (0, width), ylim = (0, height), size = (800, 450), legend =false)
 
         # scatter(homex2, homey2, shape = :square, markeralpha = 1, markerstrokewidth = 0, color = :black, markersize = 3,
         #     xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
@@ -243,14 +243,14 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
 
 
 
-        scatter!(obstaclex, obstacley, shape = :square, color = :orange, markersize = 3,
-            xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
+        scatter!(obstaclex, obstacley, shape = :square, color = :orange, markersize = 3, markerstrokewidth = 0,
+            xlims = (0, width), ylim = (0, height), size = (800, 450), legend =false)
 
         scatter!(locationx, locationy, shape = :square, color = :pink, markersize = 10,
-            xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
+            xlims = (0, width), ylim = (0, height), size = (800, 450), legend =false)
 
         scatter!(x, y, shape = :circle, color = :red, markersize = 5,
-            xlims = (0, width), ylim = (0, height), size = (800, 800), legend =false)
+            xlims = (0, width), ylim = (0, height), size = (800, 450), legend =false)
 
          # gui()
 
@@ -259,7 +259,7 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
         step!(schedule)
 
         #println("step complet")
-    end), "ants21.mp4", fps = 30)
+    end), "ants.mp4", fps = 30)
 end
 
-@time  simulateGraphics!(myschedule,10);
+@time  simulateGraphics!(myschedule,1800);
