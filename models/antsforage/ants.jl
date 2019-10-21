@@ -180,7 +180,6 @@ function act(state::SimState, agent::Agent)
                     count = 2
                 end
                 if m > max || (m == max && nextBoolean(1.0/(count+=1)))#rand() < 1.0/(count+=1))
-                    println("Agente: pos[$(agent.state.pos.x),$(agent.state.pos.x)] - lastPos[$(agent.state.lastPos.x),$(agent.state.lastPos.x)]")
                     max = m
                     max_x = _x
                     max_y = _y

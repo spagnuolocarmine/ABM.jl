@@ -86,19 +86,31 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
         #println("pure qua ci arrivo")
         y = []
         #println("sono quasi al for")
+
+        deadx = []
+        deady = []
         for j = 1:length(points)
+
             push!(x, points[j].x)
             push!(y, points[j].y)
+
+            dict = field.f[points[j]]
+            agent = collect(keys(dict))
+
+            if agent[1].state.isDead == true
+                push!(deadx, points[j].x)
+                push!(deady, points[j].y)
+            end
         end
 
-        for k = 1:length(x)
-            # println("sono uscito: $(x[k]) e $(y[k])")
-        end
 
+        scatter(x, y, color = :red,
+         markersize = 6, legend = false,
+         xlims = (0, width), ylim = (0, height), size = (800, 800))
 
-        scatter(x, y, shape = :rtriangle, color = :purple, background_color = :gray,
-         markersize = 6, markerstrokewidth = 0, legend = false,
-         xlims = (0, width), ylim = (0, height), size = (800, 450))
+         scatter!(deadx, deady, color = :black,
+          markersize = 6, legend = false,
+          xlims = (0, width), ylim = (0, height), size = (800, 800))
 
         #println("ho anche stampato")
 
