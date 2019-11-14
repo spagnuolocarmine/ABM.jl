@@ -56,24 +56,13 @@ for i in 1:numBoids
 end
 
 
-#@time simulate!(myschedule,10)
 
 using Profile
-#using ProfileView
+
 using Juno
 Profile.init(delay=0.0005, n = 10^7)
 
 Profile.clear()
-# @time Profile.@profile simulate!(myschedule,10);
-# Juno.profiler()
-
-# @time step!(myschedule)
-# println("size ",length(field.fO))
-# @time step!(myschedule)
-# println("size ",length(field.fO))
-# @time step!(myschedule)
-# println("size ",length(field.fO))
-#
 
 function simulateGraphics!(schedule::Schedule, nsteps::Int64)
     mp4(@animate(for i = 1:nsteps
@@ -81,11 +70,9 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
 
         field = schedule.simstate.fields[length(schedule.simstate.fields)]
         points = collect(getAllObjects(field))
-        #println("fino a qua ci arrivo")
+
         x = []
-        #println("pure qua ci arrivo")
         y = []
-        #println("sono quasi al for")
 
         deadx = []
         deady = []
@@ -103,7 +90,6 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
             end
         end
 
-
         scatter(x, y, color = :red,
          markersize = 6, legend = false,
          xlims = (0, width), ylim = (0, height), size = (800, 800))
@@ -112,71 +98,9 @@ function simulateGraphics!(schedule::Schedule, nsteps::Int64)
           markersize = 6, legend = false,
           xlims = (0, width), ylim = (0, height), size = (800, 800))
 
-        #println("ho anche stampato")
-
         step!(schedule)
 
-        #println("step complet")
     end), "boids.mp4", fps = 30)
 end
 
 @time  simulateGraphics!(myschedule,900);
-
-
-
-
-
-
-
-
-
-
-
-
-
-"""@time while myschedule.steps < 3
-    println("[",myschedule.steps,"] time: ",myschedule.time)
-    @time step!(myschedule)
-    #Swap the fields status to the new one A = B
-    @time for field in myschedule.simstate.fields
-        swapState!(field)
-    end
-end"""
-
-
-"""
-function consistency(neighborhood::Vector{Union{Agent,Patch}})
-    if length(neighborhood) == 0 return Real2D(0,0) end
-    x = 0
-    y = 0
-    count = 0
-    for neighboring in neighborhood
-        count++
-        x += neighboring.state.orientation.x
-        y += neighboring.state.orientation.y
-    end
-    if count > 0
-        x /= count
-        y /= count
-    end
-    return Real2D(x,y)
-end
-
-function cohesion(boid::Agent, neighborhood::Vector{Union{Agent,Patch}})
-    if length(neighborhood) == 0 return Real2D(0,0) end
-    x = 0
-    y = 0
-    count = 0
-    for neighboring in neighborhood
-        count++
-        tpos = toroidal(boid.state.pos, field.width, field.height)
-        ntpos = toroidal(neighboring.state.pos, field.width, field.height)
-        x += dx;
-                y += dy;
-    end
-    if count > 0
-        x /= count
-        y /= count
-    end
-    return Real2D(-x/10.0,-y/10.0)
-end"""

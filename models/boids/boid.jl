@@ -152,11 +152,11 @@ function fstep(state::SimState, agent::Agent)
         return
     end
 
-    neighbors = getNeighbors(field, thisBoid)       
+    neighbors = getNeighbors(field, thisBoid)
 
-    avoid = avoidance(neighbors, field, thisBoid)   
-    cohe = cohesion(neighbors, field, thisBoid)     
-    rand = randomness()                             
+    avoid = avoidance(neighbors, field, thisBoid)
+    cohe = cohesion(neighbors, field, thisBoid)
+    rand = randomness()
     cons = consistency(neighbors, field)
     mome = thisBoid.lastPos
 
@@ -171,6 +171,6 @@ function fstep(state::SimState, agent::Agent)
 
     thisBoid.lastPos = Real2D(dx, dy)
     thisBoid.pos = Real2D(tTransform(thisBoid.pos.x + dx, field.width), tTransform(thisBoid.pos.y + dy, field.height))                          #TODO COMPLETARE
-    # println("###$thisBoid###")
+
     setObjectLocation!(field, agent, thisBoid.pos)
 end
