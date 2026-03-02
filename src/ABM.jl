@@ -29,7 +29,7 @@ export Real2D,
 export Location
 export Field
 export Field2D,
-        setObjectLocation!,
+        setObjectLocation!, tTransform,
         getObjectLocation, getObjectsAtLocation, getNeighborsWithinDistance, getAllObjects,
         numObjectsAtLocation,
         remove!, clean!
@@ -68,7 +68,7 @@ include("schedule.jl")
 
 function simulate!(schedule::Schedule, nsteps::Int64)
     while schedule.steps < nsteps
-        println("[",schedule.steps,"] time: ",schedule.time)
+        #println("[",schedule.steps,"] time: ",schedule.time)
         step!(schedule)
 
     end

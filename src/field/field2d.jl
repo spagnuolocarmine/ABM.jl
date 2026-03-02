@@ -171,6 +171,6 @@ function clean!(f::Field2D{T,D}) where {T<:Real,D<:Real}
 end
 
 
-function discretize(p::Real2D{T}, discretization::T) where {T<:Real}
+function discretize(p::Real2D{T}, discretization::Float64) where {T<:Real}
     Real2D{Int}(convert(Int, floor(p.x/discretization)), convert(Int, floor(p.y/discretization)));
 end
